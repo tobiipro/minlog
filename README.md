@@ -1,6 +1,7 @@
 # minlog [![Build Status][2]][1]
 
-`minlog` is inspired by [bunyan](https://github.com/trentm/node-bunyan)
+`minlog` is a *min*imalistic logger (Swedish pun intended; it translates to "my log"),
+inspired by [bunyan](https://github.com/trentm/node-bunyan)
 which was meant to be "a simple and fast JSON logging module",
 but in time got one too many built-in (aka forced) features.
 
