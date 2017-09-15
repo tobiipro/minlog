@@ -83,11 +83,11 @@ export default class MinLog {
 
     let levelName = _.invert(this.levels)[level] || `lvl${level}`;
     switch (levelName) {
-      case 'verbose':
-        levelName = 'debug';
-        break;
-      default:
-        break;
+    case 'verbose':
+      levelName = 'debug';
+      break;
+    default:
+      break;
     }
 
     return levelName;
