@@ -28,7 +28,9 @@ let log = new MinLog({
     serializeErr
   ],
   listeners: [
-    logToConsole
+    logToConsole({
+      level: 'error' // ignore log entries below the "error" level threshold
+    })
   ]
 });
 
