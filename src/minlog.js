@@ -1,9 +1,5 @@
 import _ from 'lodash';
 
-let _log = {
-  local: console
-};
-
 // See http://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
 export let _getCallerInfo = function(level) {
   // eslint-disable-next-line no-invalid-this, consistent-this

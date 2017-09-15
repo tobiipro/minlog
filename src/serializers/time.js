@@ -2,10 +2,6 @@ import _ from 'lodash';
 import moment from 'moment';
 import momentTz from 'moment-timezone';
 
-let _log = {
-  local: console
-};
-
 export default async function({entry}) {
   let {_time} = entry;
 

@@ -2,10 +2,6 @@ import _ from 'lodash';
 import moment from 'moment';
 import state from '../state';
 
-let _log = {
-  local: console
-};
-
 export default async function({entry, logger, rawEntry}) {
   if (_.filter(rawEntry._args).length === 1 && rawEntry._args[0]._babelSrc) {
     return;

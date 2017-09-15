@@ -1,10 +1,6 @@
 import _ from 'lodash';
 import stacktrace from 'stacktrace-js';
 
-let _log = {
-  local: console
-};
-
 export default async function({entry}) {
   let {err} = entry;
 
@@ -19,9 +15,11 @@ export default async function({entry}) {
     try {
       stack = await stacktrace.fromError(err, {offline: true});
     } catch (stacktraceError2) {
-      _log.local.error(stacktraceError2);
+      // eslint-disable-next-line no-console
+      console.error(stacktraceError2);
     }
-    _log.local.error(stacktraceError);
+    // eslint-disable-next-line no-console
+    console.error(stacktraceError);
   }
 
   entry.err = {
