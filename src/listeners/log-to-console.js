@@ -4,7 +4,7 @@ import moment from 'moment';
 /*
 cfg has 2 properties
 - level (optional, defaults to trace)
-  Any log entry less important that cfg.level is ignore.
+  Any log entry less important that cfg.level is ignored.
 - iframeId (optional, default to 'top' or '?'
   An identifier for the current "window".
 */
@@ -23,9 +23,9 @@ export default function(cfg = {}) {
     }
 
     let now = moment(entry._time.stamp).utcOffset(entry._time.utc_offset).toISOString();
-    let levelName = logger.levelToLevelName(entry._level);
+    let levelName = logger.levels.levelToLevelName(entry._level);
     let formattedLevelName = _.padStart(_.toUpper(levelName), '5');
-    let consoleFun = logger.levelToConsoleFun(entry._level);
+    let consoleFun = logger.levels.levelToConsoleFun(entry._level);
 
     let color = '';
     switch (consoleFun) {
