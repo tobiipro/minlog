@@ -1,39 +1,5 @@
 import _ from 'lodash';
-
-// See http://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
-export let _getCallerInfo = function(level) {
-  // eslint-disable-next-line no-invalid-this, consistent-this
-  let self = this;
-
-  // 'strict' mode has no caller info
-  if (self === undefined) {
-    return;
-  }
-
-  let origLimit = Error.stackTraceLimit;
-  let origPrepare = Error.prepareStackTrace;
-  Error.stackTraceLimit = level;
-
-  let info;
-  Error.prepareStackTrace = function(_err, stack) {
-    let caller = stack[level - 1];
-    if (_.isUndefined(caller)) {
-      return;
-    }
-
-    info = {
-      file: caller.getFileName(),
-      line: caller.getLineNumber(),
-      function: caller.getFunctionName()
-    };
-  };
-  // eslint-disable-next-line no-unused-expressions
-  Error().stack;
-
-  Error.stackTraceLimit = origLimit;
-  Error.prepareStackTrace = origPrepare;
-  return info;
-};
+import {getCallerInfo} from './util';
 
 export default class MinLog {
   levels = {
@@ -123,7 +89,7 @@ export default class MinLog {
       level = this.levels[level];
     }
 
-    let src = exports._getCallerInfo(5);
+    let src = getCallerInfo(5);
 
     let entry = {
       _time: new Date(),
