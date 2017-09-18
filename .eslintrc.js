@@ -4,6 +4,6 @@ module.exports = {
     'firecloud/node.js'
   ],
   env: {
-    "jest": true
+    jest: true
   }
 };
