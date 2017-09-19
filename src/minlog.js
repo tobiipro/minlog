@@ -1,5 +1,7 @@
 import _ from 'lodash';
-import {getCallerInfo} from './util';
+import {
+  getCallerInfo
+} from './util';
 
 export default class MinLog {
   levels = {
