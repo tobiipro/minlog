@@ -8,3 +8,13 @@ endif
 include support-firecloud/repo/Makefile.pkg.node.mk
 
 # ------------------------------------------------------------------------------
+
+JEST = $(call which,JEST,jest)
+
+# ------------------------------------------------------------------------------
+
+.PHONY: test
+test: ## Test.
+	@$(ECHO_DO) "Testing..."
+	$(JEST)
+	@$(ECHO_DONE)
