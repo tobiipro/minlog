@@ -33,7 +33,7 @@ export default class MinLog {
     entry = this.entry,
     serializers = this.serializers,
     listeners = this.listeners
-  }) {
+  } = {}) {
     this.entry = entry;
     this.serializers = _.clone(serializers);
     this.listeners = _.clone(listeners);
