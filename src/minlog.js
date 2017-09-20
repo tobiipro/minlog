@@ -46,7 +46,11 @@ export default class MinLog {
   levelToLevelName(level) {
     if (_.isString(level)) {
       // eslint-disable-next-line prefer-destructuring
-      level = this.levels[level] || this.levels.trace;
+      level = this.levels[level];
+
+      if (_.isUndefined(level)) {
+        throw new Error(`Unknown level name ${level}. Known: ${_.keys(this.levels)}.`);
+      }
     }
 
     let levelName = _.invert(this.levels)[level] || `lvl${level}`;
