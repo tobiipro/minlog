@@ -15,6 +15,7 @@ install:
   - make deps
 script:
   - make
+  - make test
 
 language:
   - node_js
