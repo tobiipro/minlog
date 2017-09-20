@@ -5,6 +5,11 @@ import {
 
 export default class MinLog {
   levels = {
+    // npm alias
+    fatal: 0, // emergency
+    verbose: 70, // debug
+    silly: 80,
+
     // https://tools.ietf.org/html/rfc3164 (multiplier 10)
     emergency: 0,
     alert: 10,
@@ -18,12 +23,7 @@ export default class MinLog {
     // console
     warn: 40, // warning
     info: 60, // informational
-    trace: 90,
-
-    // alias
-    fatal: 0, // emergency
-    verbose: 70, // debug
-    silly: 80
+    trace: 90
   };
 
   serializers = [];
@@ -54,14 +54,6 @@ export default class MinLog {
     }
 
     let levelName = _.invert(this.levels)[level] || `lvl${level}`;
-    switch (levelName) {
-    case 'verbose':
-      levelName = 'debug';
-      break;
-    default:
-      break;
-    }
-
     return levelName;
   }
 
