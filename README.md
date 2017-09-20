@@ -47,7 +47,7 @@ The `MinLog` constructor takes:
 
 * `serializers`: a list of serializer functions
 * `listeners`: a list of listener functions
-* `levels`: if you want to override the built-in map of semantical levels to numerical ones
+* `levels`: if you want to append to the built-in map of semantical level to numerical one
 
 The `serializer` and the `listener` functions take:
 

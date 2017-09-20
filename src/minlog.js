@@ -30,13 +30,13 @@ export default class MinLog {
   listeners = [];
 
   constructor({
-    entry = this.entry,
     serializers = this.serializers,
-    listeners = this.listeners
+    listeners = this.listeners,
+    levels = {}
   } = {}) {
-    this.entry = entry;
     this.serializers = _.clone(serializers);
     this.listeners = _.clone(listeners);
+    this.levels = _.merge(this.levels, levels);
 
     _.forEach(this.levels, (_level, levelName) => {
       this[levelName] = _.bind(this.log, this, levelName);
