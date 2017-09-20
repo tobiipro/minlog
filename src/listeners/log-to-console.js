@@ -1,6 +1,30 @@
 import _ from 'lodash';
 import moment from 'moment';
 
+export let _levelToConsoleFun = function({level, levels}) {
+  if (_.isString(level)) {
+    // eslint-disable-next-line prefer-destructuring
+    level = levels[level];
+  }
+
+  if (_.inRange(level, 0, levels.warn)) {
+    return 'error';
+  } else if (_.inRange(level, levels.warn, levels.info)) {
+    return 'warn';
+  } else if (_.inRange(level, levels.info, levels.debug)) {
+    return 'info';
+  } else if (_.inRange(level, levels.debug, levels.trace)) {
+    // return 'debug';
+    // console.debug doesn't seem to print anything,
+    // but console.debug is an alias to console.log anyway
+    return 'log';
+  } else if (level === levels.trace) {
+    return 'trace';
+  }
+
+  return 'log';
+};
+
 /*
 cfg has 2 properties
 - level (optional, defaults to trace)
@@ -25,7 +49,10 @@ export default function(cfg = {}) {
     let now = moment(entry._time.stamp).utcOffset(entry._time.utc_offset).toISOString();
     let levelName = logger.levelToLevelName(entry._level);
     let formattedLevelName = _.padStart(_.toUpper(levelName), '5');
-    let consoleFun = logger.levelToConsoleFun(entry._level);
+    let consoleFun = exports._levelToConsoleFun({
+      level: entry._level,
+      levels: logger.levels
+    });
 
     let color = '';
     switch (consoleFun) {

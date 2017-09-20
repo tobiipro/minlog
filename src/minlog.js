@@ -61,30 +61,6 @@ export default class MinLog {
     return levelName;
   }
 
-  levelToConsoleFun(level) {
-    if (_.isString(level)) {
-      // eslint-disable-next-line prefer-destructuring
-      level = this.levels[level];
-    }
-
-    if (_.inRange(level, 0, this.levels.warn)) {
-      return 'error';
-    } else if (_.inRange(level, this.levels.warn, this.levels.info)) {
-      return 'warn';
-    } else if (_.inRange(level, this.levels.info, this.levels.debug)) {
-      return 'info';
-    } else if (_.inRange(level, this.levels.debug, this.levels.trace)) {
-      // return 'debug';
-      // console.debug doesn't seem to print anything,
-      // but console.debug is an alias to console.log anyway
-      return 'log';
-    } else if (level === this.levels.trace) {
-      return 'trace';
-    }
-
-    return 'log';
-  }
-
   async log(level, ...args) {
     if (_.isString(level)) {
       // eslint-disable-next-line prefer-destructuring
