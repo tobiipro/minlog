@@ -35,7 +35,6 @@
     "npm-publish-git": "git://github.com/andreineculau/npm-publish-git.git#v0.0.3"
   },
   "scripts": {
-    "prepare": "make package-json-prepare",
-    "test": "jest"
+    "prepare": "make package-json-prepare"
   }
 }
