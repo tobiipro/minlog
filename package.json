@@ -32,7 +32,7 @@
     "eslint-plugin-mocha": "4.11.0",
     "eslint-plugin-no-null": "1.0.2",
     "jest": "21.1.0",
-    "npm-publish-git": "git://github.com/andreineculau/npm-publish-git.git#v0.0.3"
+    "npm-publish-git": "git://github.com/andreineculau/npm-publish-git.git#v0.0.4"
   },
   "scripts": {
     "prepare": "make package-json-prepare"
