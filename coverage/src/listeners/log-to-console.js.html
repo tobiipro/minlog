@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/listeners/log-to-console.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">All files</a> / <a href="index.html">src/listeners</a> log-to-console.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">23.73% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>14/59</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">32.43% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>12/37</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>1/4</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">23.73% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>14/59</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">38x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import _ from 'lodash';
+import moment from 'moment';
+&nbsp;
+export let _levelToConsoleFun = function({level, levels}) {
+  if (_.isString(level)) {
+    // eslint-disable-next-line prefer-destructuring
+    level = levels[level];
+  }
+&nbsp;
+  if (_.inRange(level, 0, levels.warn)) {
+    return 'error';
+  } else if (_.inRange(level, levels.warn, levels.info)) {
+    return 'warn';
+  } else if (_.inRange(level, levels.info, levels.debug)) {
+    return 'info';
+  } else if (_.inRange(level, levels.debug, levels.trace)) {
+    // return 'debug';
+    // console.debug doesn't seem to print anything,
+    // but console.debug is an alias to console.log anyway
+    return 'log';
+  } else if (level === levels.trace) {
+    return 'trace';
+  }
+&nbsp;
+  return 'log';
+};
+&nbsp;
+/*
+cfg has 2 properties
+- level (optional, defaults to trace)
+  Any log entry less important that cfg.level is ignore.
+- iframeId (optional, default to 'top' or '?'
+  An identifier for the current "window".
+*/
+&nbsp;
+export default <span class="fstat-no" title="function not covered" >fu</span>nction(cfg = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
+<span class="cstat-no" title="statement not covered" >  return <span class="fstat-no" title="function not covered" >as</span>ync function({entry, logger, rawEntry}) {</span>
+<span class="cstat-no" title="statement not covered" >    if (_.filter(rawEntry._args).length === 1 &amp;&amp; rawEntry._args[0]._babelSrc) {</span>
+<span class="cstat-no" title="statement not covered" >      return;</span>
+    }
+&nbsp;
+    let maxLevelName = <span class="cstat-no" title="statement not covered" >cfg.level || 'trace';</span>
+    let maxLevel = <span class="cstat-no" title="statement not covered" >logger.levels[maxLevelName];</span>
+<span class="cstat-no" title="statement not covered" >    maxLevel = _.floor(maxLevel / 10) * 10 + 10 - 1; </span>// round up to next level, not inclusive
+<span class="cstat-no" title="statement not covered" >    if (entry.level &gt; maxLevel) {</span>
+<span class="cstat-no" title="statement not covered" >      return;</span>
+    }
+&nbsp;
+    let now = <span class="cstat-no" title="statement not covered" >moment(entry._time.stamp).utcOffset(entry._time.utc_offset).toISOString();</span>
+    let levelName = <span class="cstat-no" title="statement not covered" >logger.levelToLevelName(entry._level);</span>
+    let formattedLevelName = <span class="cstat-no" title="statement not covered" >_.padStart(_.toUpper(levelName), '5');</span>
+    let consoleFun = <span class="cstat-no" title="statement not covered" >exports._levelToConsoleFun({</span>
+      level: entry._level,
+      levels: logger.levels
+    });
+&nbsp;
+    let color = <span class="cstat-no" title="statement not covered" >'';</span>
+<span class="cstat-no" title="statement not covered" >    switch (consoleFun) {</span>
+    case 'log':
+    case 'info':
+    case 'trace':
+<span class="cstat-no" title="statement not covered" >      color = 'color: dodgerblue';</span>
+<span class="cstat-no" title="statement not covered" >      break;</span>
+    default:
+    }
+&nbsp;
+    let prefixFormat = <span class="cstat-no" title="statement not covered" >'%c%s %c%s%c';</span>
+    let prefixArgs = <span class="cstat-no" title="statement not covered" >[</span>
+      color,
+      now,
+      'font-weight: bold',
+      formattedLevelName,
+      color
+    ];
+&nbsp;
+    let src = <span class="cstat-no" title="statement not covered" >'';</span>
+<span class="cstat-no" title="statement not covered" >    if (entry._babelSrc) {</span>
+<span class="cstat-no" title="statement not covered" >      src = _.merge({}, entry._src, entry._babelSrc);</span>
+<span class="cstat-no" title="statement not covered" >      src = ` @webpack:///./${src.file}:${src.line}:${src.column}${src.function ? ` in ${src.function}()` : ''}`;</span>
+    } else <span class="cstat-no" title="statement not covered" >if (entry._src) {</span>
+<span class="cstat-no" title="statement not covered" >      src = entry._src;</span>
+<span class="cstat-no" title="statement not covered" >      src = ` ${src.file}:${src.line}:${src.column}${src.function ? ` in ${src.function}()` : ''}`;</span>
+    }
+&nbsp;
+    let iframeId = <span class="cstat-no" title="statement not covered" >_.defaultTo(</span>
+      cfg.iframeId,
+      window.parent === window ? 'top' : '?'
+    );
+&nbsp;
+    let context = <span class="cstat-no" title="statement not covered" >{</span>
+      window,
+      documentElement: window.document.documentElement
+    };
+&nbsp;
+    let srcFormat = <span class="cstat-no" title="statement not covered" >'%s in the %s context';</span>
+    let srcArgs = <span class="cstat-no" title="statement not covered" >[</span>
+      src,
+      iframeId
+    ];
+&nbsp;
+    let msgFormat = <span class="cstat-no" title="statement not covered" >'';</span>
+    let msgArgs = <span class="cstat-no" title="statement not covered" >[];</span>
+<span class="cstat-no" title="statement not covered" >    if (entry.msg) {</span>
+<span class="cstat-no" title="statement not covered" >      msgFormat = '\n%s';</span>
+<span class="cstat-no" title="statement not covered" >      msgArgs = [</span>
+        entry.msg
+      ];
+    }
+&nbsp;
+    let extraFormat = <span class="cstat-no" title="statement not covered" >'';</span>
+    let extraArgs = <span class="cstat-no" title="statement not covered" >[];</span>
+&nbsp;
+    let extra = <span class="cstat-no" title="statement not covered" >_.omit(rawEntry, [</span>
+      '_args',
+      '_babelSrc',
+      '_level',
+      '_src',
+      '_time',
+      'iframeId',
+      'msg'
+    ]);
+<span class="cstat-no" title="statement not covered" >    _.merge(extra, context);</span>
+&nbsp;
+    // devTools console sorts keys when object is expanded
+<span class="cstat-no" title="statement not covered" >    extra = _.toPairs(extra);</span>
+<span class="cstat-no" title="statement not covered" >    extra = _.sortBy(extra, 0);</span>
+<span class="cstat-no" title="statement not covered" >    extra = _.fromPairs(extra);</span>
+&nbsp;
+    // devTools collapses objects with 'too many' keys,
+    // so we output objects with only one key
+<span class="cstat-no" title="statement not covered" >    _.forEach(extra, <span class="fstat-no" title="function not covered" >fu</span>nction(value, key) {</span>
+<span class="cstat-no" title="statement not covered" >      extraArgs.push('\n');</span>
+<span class="cstat-no" title="statement not covered" >      extraArgs.push({[key]: value});</span>
+    });
+&nbsp;
+    // eslint-disable-next-line no-console
+<span class="cstat-no" title="statement not covered" >    console[consoleFun](</span>
+      `${prefixFormat}${srcFormat}:${msgFormat}${extraFormat}`,
+      ...prefixArgs,
+      ...srcArgs,
+      ...msgArgs,
+      ...extraArgs
+    );
+  };
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Sun Sep 24 2017 16:59:24 GMT+0200 (CEST)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>
