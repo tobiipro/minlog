@@ -9,3 +9,5 @@ export {
   serializeErr,
   serializeTime
 };
+
+export default MinLog;
