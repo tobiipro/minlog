@@ -66,25 +66,24 @@ export default class MinLog {
     let src = getCallerInfo(5);
 
     let entry = {
+      _args: undefined,
       _time: new Date(),
       _level: level,
       _src: src
     };
 
-    _.forEach(args, function(arg, index) {
-      let amendEntry = {
-        [`_arg${index}`]: arg
-      };
-
+    _.forEach(args, function(arg) {
       if (_.isError(arg) && _.isUndefined(entry.msg)) {
-        amendEntry.err = arg;
+        entry.err = arg;
       } else if (_.isString(arg) && _.isUndefined(entry.msg)) {
-        amendEntry.msg = arg;
+        entry.msg = arg;
       } else if (_.isPlainObject(arg)) {
-        _.defaults(amendEntry, arg);
+        _.merge(entry, arg);
+      } else {
+        entry._args = _.merge(entry._args, {
+          [`index`]: arg
+        });
       }
-
-      _.merge(entry, amendEntry);
     });
 
     let rawEntry = _.cloneDeep(entry);
