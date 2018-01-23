@@ -27,6 +27,7 @@ export default class MinLog {
   };
 
   serializers = [];
+
   listeners = [];
 
   constructor({
