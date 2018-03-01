@@ -5,14 +5,14 @@
   "version": "0.0.6",
   "license": "Apache-2.0",
   "peerDependencies": {
-    "bluebird": "^3.0.0"
+    "bluebird": "^3.0.0",
+    "lodash": "^4.0.0",
+    "moment": "^2.0.0",
+    "moment-timezone": "~0.5.0",
+    "stacktrace-js": "^2.0.0"
   },
   "dependencies": {
-    "lodash": "4.17.5",
-    "lodash-firecloud": "git://github.com/tobiipro/lodash-firecloud.git#v0.0.11",
-    "moment": "2.20.1",
-    "moment-timezone": "0.5.14",
-    "stacktrace-js": "2.0.0"
+    "lodash-firecloud": "git://github.com/tobiipro/lodash-firecloud.git#v0.0.11"
   },
   "devDependencies": {
     "babel-cli": "6.26.0",
@@ -38,7 +38,11 @@
     "eslint-plugin-mocha": "4.11.0",
     "eslint-plugin-no-null": "1.0.2",
     "jest": "22.4.2",
-    "npm-publish-git": "git://github.com/andreineculau/npm-publish-git.git#v0.0.4"
+    "lodash": "4.17.5",
+    "moment": "2.20.1",
+    "moment-timezone": "0.5.14",
+    "npm-publish-git": "git://github.com/andreineculau/npm-publish-git.git#v0.0.4",
+    "stacktrace-js": "2.0.0"
   },
   "scripts": {
     "prepare": "make package-json-prepare"
