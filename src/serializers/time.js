@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash-firecloud';
 import moment from 'moment';
 import momentTz from 'moment-timezone';
 

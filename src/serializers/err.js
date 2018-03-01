@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash-firecloud';
 import stacktrace from 'stacktrace-js';
 
 export default async function({entry}) {

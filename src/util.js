@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash-firecloud';
 
 // See http://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
 export let getCallerInfo = function(level) {

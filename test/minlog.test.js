@@ -1,7 +1,7 @@
 import MinLog from '../src/minlog';
 import _ from 'lodash';
 
-describe('MinLog', function() {
+describe('minlog', function() {
   describe('levels', function() {
     it('should create convenience methods (default levels)', function() {
       let instance = new MinLog();
