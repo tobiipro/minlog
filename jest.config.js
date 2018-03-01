@@ -1,1 +1,0 @@
-support-firecloud/repo/jest.config.js
