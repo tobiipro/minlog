@@ -1,5 +1,5 @@
 import MinLog from '../../src/minlog';
-import _ from 'lodash';
+import _ from 'lodash-firecloud';
 
 import {
   _levelToConsoleFun
