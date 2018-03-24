@@ -12,4 +12,8 @@ include support-firecloud/repo/mk/js.publish.npg.mk
 
 # ------------------------------------------------------------------------------
 
+PATH_FILES_IGNORE := \
+	$(PATH_FILES_IGNORE) \
+	-e "^test/listeners/__snapshots__/" \
+
 # ------------------------------------------------------------------------------
