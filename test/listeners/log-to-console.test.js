@@ -1,9 +1,9 @@
-import MinLog from '../../src/minlog';
+import MinLog from '../../lib/minlog';
 import _ from 'lodash-firecloud';
 
 import {
   _levelToConsoleFun
-} from '../../src/listeners/log-to-console';
+} from '../../lib/listeners/log-to-console';
 
 describe('logToConsole listener', function() {
   describe('_levelToConsoleFun', function() {

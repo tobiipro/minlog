@@ -1,7 +1,7 @@
 import _ from 'lodash-firecloud';
 import moment from 'moment';
 
-export let _levelToConsoleFun = function({level, levels}) {
+let _levelToConsoleFun = function({level, levels}) {
   if (_.isString(level)) {
     // eslint-disable-next-line prefer-destructuring
     level = levels[level];
@@ -49,7 +49,7 @@ export default function(cfg = {}) {
     let now = moment(entry._time.stamp).utcOffset(entry._time.utc_offset).toISOString();
     let levelName = logger.levelToLevelName(entry._level);
     let formattedLevelName = _.padStart(_.toUpper(levelName), '5');
-    let consoleFun = exports._levelToConsoleFun({
+    let consoleFun = _levelToConsoleFun({
       level: entry._level,
       levels: logger.levels
     });
