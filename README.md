@@ -80,5 +80,5 @@ and decide to ignore it or not.
 [Apache 2.0](LICENSE)
 
 
-  [1]: https://travis-ci.org/tobiipro/minlog
-  [2]: https://travis-ci.org/tobiipro/minlog.svg?branch=master
+  [1]: https://travis-ci.com/tobiipro/minlog
+  [2]: https://travis-ci.com/tobiipro/minlog.svg?branch=master
