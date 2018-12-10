@@ -1,7 +1,7 @@
 import _ from 'lodash-firecloud';
 import stacktrace from 'stacktrace-js';
 
-export default async function({entry}) {
+export let serializeErr = async function({entry}) {
   let {err} = entry;
 
   if (!_.isError(err)) {
@@ -38,3 +38,5 @@ export default async function({entry}) {
 
   return entry;
 };
+
+export default serializeErr;

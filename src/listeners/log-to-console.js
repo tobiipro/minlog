@@ -33,7 +33,7 @@ cfg has 2 properties
   An identifier for the current "window".
 */
 
-export default function(cfg = {}) {
+export let logToConsole = function(cfg = {}) {
   return async function({entry, logger, rawEntry}) {
     if (_.filter(rawEntry._args).length === 1 && rawEntry._args[0]._babelSrc) {
       return;
@@ -142,4 +142,6 @@ export default function(cfg = {}) {
       ...extraArgs
     );
   };
-}
+};
+
+export default logToConsole;

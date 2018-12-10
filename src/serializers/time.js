@@ -2,7 +2,7 @@ import _ from 'lodash-firecloud';
 import moment from 'moment';
 import momentTz from 'moment-timezone';
 
-export default async function({entry}) {
+export let serializeTime = async function({entry}) {
   let {_time} = entry;
 
   if (!_.isDate(_time)) {
@@ -17,3 +17,5 @@ export default async function({entry}) {
 
   return entry;
 };
+
+export default serializeTime;

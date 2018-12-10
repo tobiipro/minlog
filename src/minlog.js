@@ -92,9 +92,11 @@ export default class MinLog {
     let rawEntry = _.cloneDeep(entry);
     rawEntry._args = args;
 
-    await Promise.all(_.map(this.serializers, async (serializer) => {
+    entry = await _.reduce(this.serializers, async (entryPromise, serializer) => {
+      let entry = await entryPromise;
       entry = await serializer({entry, logger: this, rawEntry});
-    }));
+      return Promise.resolve(entry);
+    }, Promise.resolve(entry));
 
     _.forEach(this.listeners, (listener) => {
       listener({entry, logger: this, rawEntry});
