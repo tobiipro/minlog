@@ -1,7 +1,7 @@
 module.exports = {
   presets: [
     ['firecloud', {
-      'babel-preset-env': {
+      '@babel/preset-env': {
         targets: {
           // AWS Lambda Node.js
           node: '6.10'
