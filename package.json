@@ -4,9 +4,6 @@
   "description": "minlog. A minimal JavaScript logger of events with structured data.",
   "version": "0.2.4",
   "license": "Apache-2.0",
-  "engines": {
-    "node": ">=6.10"
-  },
   "files": [
     "/index.js",
     "/src/",
