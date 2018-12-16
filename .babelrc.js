@@ -3,8 +3,10 @@ module.exports = {
     ['firecloud', {
       '@babel/preset-env': {
         targets: {
-          // AWS Lambda Node.js
-          node: '6.10'
+          browsers: [
+            'last 2 Chrome versions'
+          ],
+          node: '8.10' // Latest AWS Lambda Node.js
         }
       }
     }]
