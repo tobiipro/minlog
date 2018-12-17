@@ -8,7 +8,7 @@ matrix:
 
     - name: "Node.js latest"
       language: node_js
-      node_js: latest
+      node_js: node
       env: CACHE_NAME=node
 
 # 1. Notifications
