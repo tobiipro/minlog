@@ -25,7 +25,6 @@
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
     "babel-preset-firecloud": "git://github.com/tobiipro/babel-preset-firecloud.git#semver:~0.2.2",
-    "bluebird": "^3.5.1",
     "eclint": "^2.6.0",
     "eslint": "^5.10.0",
     "eslint-config-firecloud": "git://github.com/tobiipro/eslint-config-firecloud.git#semver:~0.3.4",
