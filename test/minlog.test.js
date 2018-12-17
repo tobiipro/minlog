@@ -1,4 +1,4 @@
-import MinLog from '../lib/minlog';
+import MinLog from '../src/minlog';
 import _ from 'lodash-firecloud';
 
 describe('minlog', function() {
