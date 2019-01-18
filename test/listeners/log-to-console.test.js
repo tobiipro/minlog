@@ -12,11 +12,11 @@ describe('logToConsole listener', function() {
       let instance = new MinLog();
       let snapshot = {};
 
-      _.forEach(instance.levels, function(level, levelName) {
+      _.forEach(instance.levels, function(levelCode, levelName) {
         let levels = [
-          level - 1,
-          level,
-          level + 1,
+          levelCode - 1,
+          levelCode,
+          levelCode + 1,
           levelName,
           `x${levelName}x`
         ];
