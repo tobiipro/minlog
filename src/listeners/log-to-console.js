@@ -34,7 +34,7 @@ cfg has 2 properties
 */
 
 export let logToConsole = function(cfg = {}) {
-  let isBrowser = _.isUndefined(process);
+  let isBrowser = typeof window !== 'undefined';
   let iframeId = '?';
 
   if (isBrowser) {
