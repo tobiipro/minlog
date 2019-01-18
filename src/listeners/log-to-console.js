@@ -38,7 +38,9 @@ export let logToConsole = function(cfg = {}) {
   let iframeId = '?';
 
   if (isBrowser) {
-    iframeId = window.parent === window ? 'top' : '?';
+    if (window.parent === window) {
+      iframeId = 'top';
+    }
   }
 
   _.defaults(cfg, {
