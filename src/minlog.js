@@ -80,7 +80,7 @@ export default class MinLog {
         [`_arg${index}`]: arg
       };
 
-      if (_.isError(arg) && _.isUndefined(entry.msg)) {
+      if (_.isError(arg) && _.isUndefined(entry.err)) {
         amendEntry.err = arg;
       } else if (_.isString(arg) && _.isUndefined(entry.msg)) {
         amendEntry.msg = arg;
