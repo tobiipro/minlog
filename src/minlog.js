@@ -40,36 +40,38 @@ export default class MinLog {
     this.listeners = _.clone(listeners);
     this.levels = _.merge(this.levels, levels);
 
-    _.forEach(this.levels, (_level, levelName) => {
-      this[levelName] = _.bind(this.log, this, levelName);
+    _.forEach(this.levels, (levelCode, levelName) => {
+      this[levelName] = _.bind(this.log, this, levelCode);
     });
   }
 
-  levelToLevelName(level) {
-    if (_.isString(level)) {
-      // eslint-disable-next-line prefer-destructuring
-      level = this.levels[level];
+  levelToLevelName(levelCodeOrName) {
+    if (_.isString(levelCodeOrName)) {
+      let levelName = levelCodeOrName;
 
-      if (_.isUndefined(level)) {
-        throw new Error(`Unknown level name ${level}. Known: ${_.keys(this.levels)}.`);
+      if (_.isUndefined(this.levels[levelName])) {
+        throw new Error(`Unknown level name ${levelName}. Known: ${_.keys(this.levels)}.`);
       }
+
+      return levelName;
     }
 
-    let levelName = _.invert(this.levels)[level] || `lvl${level}`;
+    let levelCode = levelCodeOrName;
+    let levelName = _.invert(this.levels)[levelCode] || `lvl${levelCode}`;
     return levelName;
   }
 
-  async log(level, ...args) {
-    if (_.isString(level)) {
-      // eslint-disable-next-line prefer-destructuring
-      level = this.levels[level];
+  async log(levelCodeOrName, ...args) {
+    let levelCode = levelCodeOrName;
+    if (_.isString(levelCodeOrName)) {
+      levelCode = this.levels[levelCodeOrName];
     }
 
     let src = getCallerInfo(5);
 
     let entry = {
       _time: new Date(),
-      _level: level,
+      _level: levelCode,
       _src: src
     };
 
