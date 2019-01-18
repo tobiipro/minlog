@@ -27,19 +27,31 @@ let _levelToConsoleFun = function({level, levels}) {
 
 /*
 cfg has 2 properties
+- iframeId (optional, default to 'top' or '?')
+  An identifier for the current "context".
 - level (optional, defaults to trace)
-  Any log entry less important that cfg.level is ignore.
-- iframeId (optional, default to 'top' or '?'
-  An identifier for the current "window".
+  Any log entry less important that cfg.level is ignored.
 */
 
 export let logToConsole = function(cfg = {}) {
+  let isBrowser = _.isUndefined(process);
+  let iframeId = '?';
+
+  if (isBrowser) {
+    iframeId = window.parent === window ? 'top' : '?';
+  }
+
+  _.defaults(cfg, {
+    iframeId,
+    level: 'trace'
+  });
+
   return async function({entry, logger, rawEntry}) {
     if (_.filter(rawEntry._args).length === 1 && rawEntry._args[0]._babelSrc) {
       return;
     }
 
-    let maxLevelName = cfg.level || 'trace';
+    let maxLevelName = cfg.level;
     let maxLevel = logger.levels[maxLevelName];
     maxLevel = _.floor(maxLevel / 10) * 10 + 10 - 1; // round up to next level, not inclusive
     if (entry.level > maxLevel) {
@@ -82,11 +94,6 @@ export let logToConsole = function(cfg = {}) {
       src = ` ${src.file}:${src.line}:${src.column}${src.function ? ` in ${src.function}()` : ''}`;
     }
 
-    let iframeId = _.defaultTo(
-      cfg.iframeId,
-      window.parent === window ? 'top' : '?'
-    );
-
     let context = {
       window,
       documentElement: window.document.documentElement
@@ -95,7 +102,7 @@ export let logToConsole = function(cfg = {}) {
     let srcFormat = '%s in the %s context';
     let srcArgs = [
       src,
-      iframeId
+      cfg.iframeId
     ];
 
     let msgFormat = '';
@@ -133,14 +140,16 @@ export let logToConsole = function(cfg = {}) {
       extraArgs.push({[key]: value});
     });
 
-    // eslint-disable-next-line no-console
-    console[consoleFun](
-      `${prefixFormat}${srcFormat}:${msgFormat}${extraFormat}`,
+    let format = `${prefixFormat}${srcFormat}:${msgFormat}${extraFormat}`;
+    let vars = [
       ...prefixArgs,
       ...srcArgs,
       ...msgArgs,
       ...extraArgs
-    );
+    ];
+
+    // eslint-disable-next-line no-console
+    console[consoleFun](format, ...vars);
   };
 };
 
