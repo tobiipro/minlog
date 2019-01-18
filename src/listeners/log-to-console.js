@@ -56,7 +56,7 @@ export let logToConsole = function(cfg = {}) {
     let maxLevelName = cfg.level;
     let maxLevel = logger.levels[maxLevelName];
     maxLevel = _.floor(maxLevel / 10) * 10 + 10 - 1; // round up to next level, not inclusive
-    if (entry.level > maxLevel) {
+    if (entry._level > maxLevel) {
       return;
     }
 
