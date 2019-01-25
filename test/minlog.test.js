@@ -92,4 +92,14 @@ describe('minlog', function() {
       });
     });
   });
+
+  describe('maxLevelCodeInGroup', function() {
+    let logger = new MinLog();
+
+    it('should return the maximum level up to the next group, not inclusive', function() {
+      expect(logger.maxLevelCodeInGroup(60)).toBe(69);
+      expect(logger.maxLevelCodeInGroup(69)).toBe(69);
+      expect(logger.maxLevelCodeInGroup(70)).toBe(79);
+    });
+  });
 });

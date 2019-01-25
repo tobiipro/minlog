@@ -83,6 +83,15 @@ export default class MinLog {
     return levelName;
   }
 
+  maxLevelCodeInGroup(levelCodeOrName) {
+    let levelCode = this.levelToLevelCode(levelCodeOrName);
+
+    // round up levelCode to next level group, not inclusive
+    let maxLevelCodeGroup = _.floor(levelCode / 10) + 1;
+    let maxLevelCode = maxLevelCodeGroup * 10 - 1;
+    return maxLevelCode;
+  }
+
   async log(levelCodeOrName, ...args) {
     let levelCode = levelCodeOrName;
     if (_.isString(levelCodeOrName)) {
