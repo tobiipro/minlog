@@ -33,6 +33,40 @@ describe('minlog', function() {
     });
   });
 
+  describe('levelToLevelCode', function() {
+    let instance = new MinLog();
+
+    it('should return the level code for defined level names', function() {
+      _.forEach(_.keys(instance.levels), function(levelName) {
+        let levelCode = instance.levelToLevelCode(levelName);
+
+        expect(levelCode).toBe(instance.levels[levelName]);
+      });
+    });
+
+    it('should return the level code for defined level codes', function() {
+      _.forEach(_.values(instance.levels), function(vanillaLevelCode) {
+        let levelCode = instance.levelToLevelCode(vanillaLevelCode);
+
+        expect(levelCode).toBe(vanillaLevelCode);
+      });
+    });
+
+    it('should return the level code for undefined <lvlN> levels', function() {
+      _.forEach(_.range(0, 100), function(vanillaLevelCode) {
+        let levelName = instance.levelToLevelName(vanillaLevelCode);
+
+        if (levelName in instance.levels) {
+          // ignore defined levels
+          return;
+        }
+
+        let levelCode = instance.levelToLevelCode(levelName);
+        expect(levelCode).toBe(vanillaLevelCode);
+      });
+    });
+  });
+
   describe('levelToLevelName', function() {
     let instance = new MinLog();
 

@@ -45,6 +45,26 @@ export default class MinLog {
     });
   }
 
+  levelToLevelCode(levelCodeOrName) {
+    if (_.isInteger(levelCodeOrName)) {
+      let levelCode = levelCodeOrName;
+      return levelCode;
+    }
+
+    let levelName = levelCodeOrName;
+    if (/^lvl[0-9]+$/.test(levelName)) {
+      let levelCode = _.replace(levelName, /^lvl/, '');
+      levelCode = _.toInteger(levelCode);
+      return levelCode;
+    }
+
+    if (_.isUndefined(this.levels[levelName])) {
+      throw new Error(`Unknown level name ${levelName}. Known: ${_.keys(this.levels)}.`);
+    }
+
+    return this.levels[levelName];
+  }
+
   levelToLevelName(levelCodeOrName) {
     if (_.isString(levelCodeOrName)) {
       let levelName = levelCodeOrName;
