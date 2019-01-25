@@ -27,7 +27,7 @@ let _levelToConsoleFun = function({level, levels}) {
 
 /*
 cfg has 2 properties
-- iframeId (optional, default to 'top' or '?')
+- contextId (optional, default to 'top' or '?')
   An identifier for the current "context".
 - level (optional, defaults to trace)
   Any log entry less important that cfg.level is ignored.
@@ -35,18 +35,18 @@ cfg has 2 properties
 
 export let logToConsole = function(cfg = {}) {
   let isBrowser = typeof window !== 'undefined';
-  let iframeId = '?';
+  let contextId = '?';
   let hasCssSupport = false;
 
   if (isBrowser) {
     if (window.parent === window) {
-      iframeId = 'top';
+      contextId = 'top';
     }
     hasCssSupport = true;
   }
 
   _.defaults(cfg, {
-    iframeId,
+    contextId,
     level: 'trace'
   });
 
@@ -112,7 +112,7 @@ export let logToConsole = function(cfg = {}) {
     let srcFormat = '%s in the %s context';
     let srcArgs = [
       src,
-      cfg.iframeId
+      cfg.contextId
     ];
 
     let msgFormat = '';
@@ -133,7 +133,7 @@ export let logToConsole = function(cfg = {}) {
       '_level',
       '_src',
       '_time',
-      'iframeId',
+      'contextId',
       'msg'
     ]);
     _.merge(extra, context);
