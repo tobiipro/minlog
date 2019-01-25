@@ -47,6 +47,12 @@ export default class MinLog {
     });
   }
 
+  levelIsBeyondGroup(levelCodeOrName, groupCodeOrName) {
+    let levelCode = this.levelToLevelCode(levelCodeOrName);
+    let maxLevelCode = this.maxLevelCodeInGroup(groupCodeOrName);
+    return levelCode > maxLevelCode;
+  }
+
   levelToLevelCode(levelCodeOrName) {
     if (_.isInteger(levelCodeOrName)) {
       let levelCode = levelCodeOrName;
@@ -81,6 +87,15 @@ export default class MinLog {
     let levelCode = levelCodeOrName;
     let levelName = _.invert(this.levels)[levelCode] || `lvl${levelCode}`;
     return levelName;
+  }
+
+  maxLevelCodeInGroup(levelCodeOrName) {
+    let levelCode = this.levelToLevelCode(levelCodeOrName);
+
+    // round up levelCode to next level group, not inclusive
+    let maxLevelCodeGroup = _.floor(levelCode / 10) + 1;
+    let maxLevelCode = maxLevelCodeGroup * 10 - 1;
+    return maxLevelCode;
   }
 
   async log(levelCodeOrName, ...args) {
