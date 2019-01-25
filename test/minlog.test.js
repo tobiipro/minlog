@@ -102,4 +102,24 @@ describe('minlog', function() {
       expect(logger.maxLevelCodeInGroup(70)).toBe(79);
     });
   });
+
+  describe('levelIsBeyondGroup', function() {
+    let logger = new MinLog();
+
+    it('should return true for levels beyond the group', function() {
+      expect(logger.levelIsBeyondGroup('debug', 'info')).toBe(true);
+      expect(logger.levelIsBeyondGroup('debug', 60)).toBe(true);
+      expect(logger.levelIsBeyondGroup(70, 'info')).toBe(true);
+    });
+
+    it('should return false for levels below and in the group', function() {
+      expect(logger.levelIsBeyondGroup('info', 'debug')).toBe(false);
+      expect(logger.levelIsBeyondGroup(60, 'debug')).toBe(false);
+      expect(logger.levelIsBeyondGroup('info', 70)).toBe(false);
+
+      expect(logger.levelIsBeyondGroup('info', 'info')).toBe(false);
+      expect(logger.levelIsBeyondGroup(60, 'info')).toBe(false);
+      expect(logger.levelIsBeyondGroup('info', 60)).toBe(false);
+    });
+  });
 });

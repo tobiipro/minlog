@@ -47,6 +47,12 @@ export default class MinLog {
     });
   }
 
+  levelIsBeyondGroup(levelCodeOrName, groupCodeOrName) {
+    let levelCode = this.levelToLevelCode(levelCodeOrName);
+    let maxLevelCode = this.maxLevelCodeInGroup(groupCodeOrName);
+    return levelCode > maxLevelCode;
+  }
+
   levelToLevelCode(levelCodeOrName) {
     if (_.isInteger(levelCodeOrName)) {
       let levelCode = levelCodeOrName;

@@ -59,8 +59,7 @@ export let logToConsole = function(cfg = {}) {
       return;
     }
 
-    let maxLevelCode = logger.maxLevelCodeInGroup(cfg.level);
-    if (entry._level > maxLevelCode) {
+    if (logger.levelIsBeyondGroup(entry._level, cfg.level)) {
       return;
     }
 
