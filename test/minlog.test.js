@@ -4,10 +4,10 @@ import _ from 'lodash-firecloud';
 describe('minlog', function() {
   describe('levels', function() {
     it('should create convenience methods (default levels)', function() {
-      let instance = new MinLog();
+      let logger = new MinLog();
 
-      _.forEach(_.keys(instance.levels), function(levelName) {
-        expect(instance).toHaveProperty(levelName);
+      _.forEach(_.keys(logger.levels), function(levelName) {
+        expect(logger).toHaveProperty(levelName);
       });
     });
 
@@ -18,35 +18,35 @@ describe('minlog', function() {
         baz: 20
       };
 
-      let instance = new MinLog();
-      let customInstance = new MinLog({
+      let logger = new MinLog();
+      let customLogger = new MinLog({
         levels: customLevels
       });
 
       _.forEach(_.keys(customLevels), function(levelName) {
-        expect(customInstance).toHaveProperty(levelName);
+        expect(customLogger).toHaveProperty(levelName);
       });
 
-      _.forEach(_.keys(instance.levels), function(levelName) {
-        expect(customInstance).toHaveProperty(levelName);
+      _.forEach(_.keys(logger.levels), function(levelName) {
+        expect(customLogger).toHaveProperty(levelName);
       });
     });
   });
 
   describe('levelToLevelCode', function() {
-    let instance = new MinLog();
+    let logger = new MinLog();
 
     it('should return the level code for defined level names', function() {
-      _.forEach(_.keys(instance.levels), function(levelName) {
-        let levelCode = instance.levelToLevelCode(levelName);
+      _.forEach(_.keys(logger.levels), function(levelName) {
+        let levelCode = logger.levelToLevelCode(levelName);
 
-        expect(levelCode).toBe(instance.levels[levelName]);
+        expect(levelCode).toBe(logger.levels[levelName]);
       });
     });
 
     it('should return the level code for defined level codes', function() {
-      _.forEach(_.values(instance.levels), function(vanillaLevelCode) {
-        let levelCode = instance.levelToLevelCode(vanillaLevelCode);
+      _.forEach(_.values(logger.levels), function(vanillaLevelCode) {
+        let levelCode = logger.levelToLevelCode(vanillaLevelCode);
 
         expect(levelCode).toBe(vanillaLevelCode);
       });
@@ -54,26 +54,26 @@ describe('minlog', function() {
 
     it('should return the level code for undefined <lvlN> levels', function() {
       _.forEach(_.range(0, 100), function(vanillaLevelCode) {
-        let levelName = instance.levelToLevelName(vanillaLevelCode);
+        let levelName = logger.levelToLevelName(vanillaLevelCode);
 
-        if (levelName in instance.levels) {
+        if (levelName in logger.levels) {
           // ignore defined levels
           return;
         }
 
-        let levelCode = instance.levelToLevelCode(levelName);
+        let levelCode = logger.levelToLevelCode(levelName);
         expect(levelCode).toBe(vanillaLevelCode);
       });
     });
   });
 
   describe('levelToLevelName', function() {
-    let instance = new MinLog();
+    let logger = new MinLog();
 
     it('should return the level name for defined levels', function() {
-      _.forEach(_.keys(instance.levels), function(vanillaLevelName) {
-        let levelName = instance.levelToLevelName(instance.levels[vanillaLevelName]);
-        let preferrredLevelName = _.invert(instance.levels)[instance.levels[vanillaLevelName]];
+      _.forEach(_.keys(logger.levels), function(vanillaLevelName) {
+        let levelName = logger.levelToLevelName(logger.levels[vanillaLevelName]);
+        let preferrredLevelName = _.invert(logger.levels)[logger.levels[vanillaLevelName]];
 
         expect(levelName).toBe(preferrredLevelName);
       });
@@ -81,9 +81,9 @@ describe('minlog', function() {
 
     it('should return <lvlN> for undefined levels', function() {
       _.forEach(_.range(0, 100), function(level) {
-        let levelName = instance.levelToLevelName(level);
+        let levelName = logger.levelToLevelName(level);
 
-        if (levelName in instance.levels) {
+        if (levelName in logger.levels) {
           // ignore defined levels
           return;
         }
