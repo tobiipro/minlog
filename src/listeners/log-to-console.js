@@ -118,9 +118,17 @@ export let logToConsole = function(cfg = {}) {
     let msgFormat = '';
     let msgArgs = [];
     if (entry.msg) {
+      let {
+        _duration: duration,
+        msg
+      } = entry;
+      if (duration) {
+        msg = `${msg} - took ${duration.ms} ms (${duration.human})`;
+      }
+
       msgFormat = '\n%s';
       msgArgs = [
-        entry.msg
+        msg
       ];
     }
 
@@ -130,9 +138,12 @@ export let logToConsole = function(cfg = {}) {
     let extra = _.omit(rawEntry, [
       '_args',
       '_babelSrc',
+      '_duration',
       '_level',
       '_src',
       '_time',
+      '_timeEnd',
+      '_timeStart',
       'contextId',
       'msg'
     ]);

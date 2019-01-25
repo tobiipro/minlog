@@ -6,6 +6,8 @@ import {
 
 export default class MinLog {
   levels = {
+    time: 70,
+
     // npm alias
     fatal: 0, // emergency
     verbose: 70, // debug
@@ -124,5 +126,17 @@ export default class MinLog {
     _.forEach(this.listeners, (listener) => {
       listener({entry, logger: this, rawEntry});
     });
+  }
+
+  async trackTime(label, fn) {
+    let entry = {
+      _timeStart: new Date()
+    };
+    this.time(label, entry);
+
+    await _.alwaysPromise(fn());
+    entry._timeEnd = new Date();
+
+    this.time(label, entry);
   }
 }
