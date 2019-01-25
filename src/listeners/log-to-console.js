@@ -36,17 +36,23 @@ cfg has 2 properties
 export let logToConsole = function(cfg = {}) {
   let isBrowser = typeof window !== 'undefined';
   let iframeId = '?';
+  let hasCssSupport = false;
 
   if (isBrowser) {
     if (window.parent === window) {
       iframeId = 'top';
     }
+    hasCssSupport = true;
   }
 
   _.defaults(cfg, {
     iframeId,
     level: 'trace'
   });
+
+  let maybeCss = function(css) {
+    return hasCssSupport ? css : '';
+  };
 
   return async function({entry, logger, rawEntry}) {
     if (_.filter(rawEntry._args).length === 1 && rawEntry._args[0]._babelSrc) {
@@ -73,18 +79,21 @@ export let logToConsole = function(cfg = {}) {
     case 'log':
     case 'info':
     case 'trace':
-      color = 'color: dodgerblue';
+      color = maybeCss('color: dodgerblue');
       break;
     default:
     }
 
     let prefixFormat = '%c%s %c%s%c';
+    if (!hasCssSupport) {
+      prefixFormat = _.replace(prefixFormat, /%c/g, hasCssSupport ? '%c' : '%s');
+    }
     let prefixArgs = [
-      color,
+      maybeCss(color),
       now,
-      'font-weight: bold',
+      maybeCss('font-weight: bold'),
       formattedLevelName,
-      color
+      maybeCss(color)
     ];
 
     let src = '';
