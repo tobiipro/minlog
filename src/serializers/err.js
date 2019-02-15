@@ -2,7 +2,9 @@ import _ from 'lodash-firecloud';
 import stacktrace from 'stacktrace-js';
 
 export let serializeErr = async function({entry}) {
-  let {err} = entry;
+  let {
+    err
+  } = entry;
 
   if (!_.isError(err)) {
     return entry;
@@ -13,7 +15,9 @@ export let serializeErr = async function({entry}) {
     stack = await stacktrace.fromError(err);
   } catch (stacktraceError) {
     try {
-      stack = await stacktrace.fromError(err, {offline: true});
+      stack = await stacktrace.fromError(err, {
+        offline: true
+      });
     } catch (stacktraceError2) {
       // eslint-disable-next-line no-console
       console.error(stacktraceError2);
