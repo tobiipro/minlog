@@ -34,14 +34,14 @@ let _levelToConsoleFun = function({level, levels}) {
 
 /*
 cfg has 2 properties
-- contextId (optional, default to 'top' or '?')
+- contextId (optional, default to 'top' in browser and undefined elsewhere)
   An identifier for the current "context".
 - level (optional, defaults to trace)
   Any log entry less important that cfg.level is ignored.
 */
 
 export let logToConsole = function(cfg = {}) {
-  let contextId = '?';
+  let contextId;
   let hasCssSupport = false;
 
   if (_isBrowser) {
@@ -117,10 +117,11 @@ export let logToConsole = function(cfg = {}) {
       });
     }
 
-    let srcFormat = '%s in the %s context';
+    let maybeContextFormat = _.isUndefined(cfg.contextId) ? '' : ' in the %s context';
+    let srcFormat = `%s${maybeContextFormat}`;
     let srcArgs = [
       src,
-      cfg.contextId
+      _.isUndefined(cfg.contextId) ? '' : cfg.contextId
     ];
 
     let msgFormat = '';
