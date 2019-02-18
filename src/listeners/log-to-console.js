@@ -1,6 +1,8 @@
 import _ from 'lodash-firecloud';
 import moment from 'moment';
 
+let _isBrowser = typeof window !== 'undefined';
+
 let _levelToConsoleFun = function({level, levels}) {
   if (_.isString(level)) {
     // eslint-disable-next-line prefer-destructuring
@@ -34,11 +36,10 @@ cfg has 2 properties
 */
 
 export let logToConsole = function(cfg = {}) {
-  let isBrowser = typeof window !== 'undefined';
   let contextId = '?';
   let hasCssSupport = false;
 
-  if (isBrowser) {
+  if (_isBrowser) {
     if (window.parent === window) {
       contextId = 'top';
     }
@@ -102,10 +103,14 @@ export let logToConsole = function(cfg = {}) {
       src = ` ${src.file}:${src.line}:${src.column}${src.function ? ` in ${src.function}()` : ''}`;
     }
 
-    let context = {
-      window,
-      documentElement: window.document.documentElement
-    };
+    let context = {};
+
+    if (_isBrowser) {
+      _.merge(context, {
+        window,
+        documentElement: window.document.documentElement
+      });
+    }
 
     let srcFormat = '%s in the %s context';
     let srcArgs = [
