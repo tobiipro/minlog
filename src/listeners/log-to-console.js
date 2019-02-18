@@ -167,7 +167,16 @@ export let logToConsole = function(cfg = {}) {
     // so we output objects with only one key
     _.forEach(extra, function(value, key) {
       extraArgs.push('\n');
-      extraArgs.push({[key]: value});
+      let obj = {
+        [key]: value
+      };
+
+      // fix for util.inspect having no indentation
+      if (!_isBrowser) {
+        obj = JSON.stringify(obj, undefined, 2);
+      }
+
+      extraArgs.push(obj);
     });
 
     let format = `${prefixFormat}${srcFormat}:${msgFormat}${extraFormat}`;
