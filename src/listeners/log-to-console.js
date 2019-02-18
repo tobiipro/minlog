@@ -150,6 +150,9 @@ export let logToConsole = function(cfg = {}) {
       'contextId',
       'msg'
     ]);
+    extra = _.omitBy(extra, function(_value, key) {
+      return /^_arg[0-9+]$/.test(key);
+    });
 
     let context = {};
     if (_isBrowser) {
