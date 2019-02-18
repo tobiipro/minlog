@@ -2,8 +2,16 @@ import _ from 'lodash-firecloud';
 import moment from 'moment';
 
 let _isBrowser = typeof window !== 'undefined';
+let _isNode = typeof process !== 'undefined' && !_.isUndefined(_.get(process, 'versions.node'));
+let _isAwsLambda = _isNode && !_.isUndefined(process.env.LAMBDA_TASK_ROOT);
 
 let _levelToConsoleFun = function({level, levels}) {
+  // on AWS Lambda the console.trace call will print '[object Object]'¯\_(ツ)_/¯
+  // plus all console funs end up in a cloudwatch stream
+  if (_isAwsLambda) {
+    return 'log';
+  }
+
   if (_.isString(level)) {
     // eslint-disable-next-line prefer-destructuring
     level = levels[level];
@@ -21,11 +29,6 @@ let _levelToConsoleFun = function({level, levels}) {
     // but console.debug is an alias to console.log anyway
     return 'log';
   } else if (level === levels.trace) {
-    // FIXME on AWS Lambda the console.trace call will print '[object Object]'¯\_(ツ)_/¯
-    if (!_isBrowser && process.env.LAMBDA_ENV) {
-      return 'log';
-    }
-
     return 'trace';
   }
 
@@ -93,7 +96,7 @@ export let logToConsole = function(cfg = {}) {
     }
     let prefixArgs = [
       maybeCss(color),
-      now,
+      _isAwsLambda ? '' : now,
       maybeCss('font-weight: bold'),
       formattedLevelName,
       maybeCss(color)
