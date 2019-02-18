@@ -21,6 +21,11 @@ let _levelToConsoleFun = function({level, levels}) {
     // but console.debug is an alias to console.log anyway
     return 'log';
   } else if (level === levels.trace) {
+    // FIXME on AWS Lambda the console.trace call will print '[object Object]'¯\_(ツ)_/¯
+    if (!_isBrowser && process.env.LAMBDA_ENV) {
+      return 'log';
+    }
+
     return 'trace';
   }
 
