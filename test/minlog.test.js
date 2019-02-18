@@ -36,11 +36,13 @@ describe('minlog', function() {
   describe('levelToLevelCode', function() {
     let logger = new MinLog();
 
-    it('should return the level code for defined level names', function() {
+    it('should return the level code for defined level names (case insensitive)', function() {
       _.forEach(_.keys(logger.levels), function(levelName) {
         let levelCode = logger.levelToLevelCode(levelName);
+        let upperLevelCode = logger.levelToLevelCode(_.toUpper(levelName));
 
         expect(levelCode).toBe(logger.levels[levelName]);
+        expect(upperLevelCode).toBe(logger.levels[levelName]);
       });
     });
 
@@ -62,7 +64,10 @@ describe('minlog', function() {
         }
 
         let levelCode = logger.levelToLevelCode(levelName);
+        let upperLevelCode = logger.levelToLevelCode(_.toUpper(levelName));
+
         expect(levelCode).toBe(vanillaLevelCode);
+        expect(upperLevelCode).toBe(vanillaLevelCode);
       });
     });
   });
@@ -110,6 +115,9 @@ describe('minlog', function() {
       expect(logger.levelIsBeyondGroup('debug', 'info')).toBe(true);
       expect(logger.levelIsBeyondGroup('debug', 60)).toBe(true);
       expect(logger.levelIsBeyondGroup(70, 'info')).toBe(true);
+
+      // case-insensitive
+      expect(logger.levelIsBeyondGroup('dEbUg', 'InfO')).toBe(true);
     });
 
     it('should return false for levels below and in the group', function() {
@@ -120,6 +128,10 @@ describe('minlog', function() {
       expect(logger.levelIsBeyondGroup('info', 'info')).toBe(false);
       expect(logger.levelIsBeyondGroup(60, 'info')).toBe(false);
       expect(logger.levelIsBeyondGroup('info', 60)).toBe(false);
+
+      // case-insensitive
+      expect(logger.levelIsBeyondGroup('iNFo', 'DeBuG')).toBe(false);
+      expect(logger.levelIsBeyondGroup('InfO', 'iNFo')).toBe(false);
     });
   });
 });

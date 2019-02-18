@@ -59,7 +59,7 @@ export default class MinLog {
       return levelCode;
     }
 
-    let levelName = levelCodeOrName;
+    let levelName = _.toLower(levelCodeOrName);
     if (/^lvl[0-9]+$/.test(levelName)) {
       let levelCode = _.replace(levelName, /^lvl/, '');
       levelCode = _.toInteger(levelCode);
@@ -75,7 +75,7 @@ export default class MinLog {
 
   levelToLevelName(levelCodeOrName) {
     if (_.isString(levelCodeOrName)) {
-      let levelName = levelCodeOrName;
+      let levelName = _.toLower(levelCodeOrName);
 
       if (_.isUndefined(this.levels[levelName])) {
         throw new Error(`Unknown level name ${levelName}. Known: ${_.keys(this.levels)}.`);
@@ -101,7 +101,7 @@ export default class MinLog {
   async log(levelCodeOrName, ...args) {
     let levelCode = levelCodeOrName;
     if (_.isString(levelCodeOrName)) {
-      levelCode = this.levels[levelCodeOrName];
+      levelCode = this.levels[_.toLower(levelCodeOrName)];
     }
 
     let src = getCallerInfo(5);
