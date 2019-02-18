@@ -111,15 +111,6 @@ export let logToConsole = function(cfg = {}) {
       src = ` ${src.file}:${src.line}:${src.column}${src.function ? ` in ${src.function}()` : ''}`;
     }
 
-    let context = {};
-
-    if (_isBrowser) {
-      _.merge(context, {
-        window,
-        documentElement: window.document.documentElement
-      });
-    }
-
     let maybeContextFormat = _.isUndefined(cfg.contextId) ? '' : ' in the %s context';
     let srcFormat = `%s${maybeContextFormat}`;
     let srcArgs = [
@@ -159,6 +150,14 @@ export let logToConsole = function(cfg = {}) {
       'contextId',
       'msg'
     ]);
+
+    let context = {};
+    if (_isBrowser) {
+      _.merge(context, {
+        window,
+        documentElement: window.document.documentElement
+      });
+    }
     _.merge(extra, context);
 
     // devTools console sorts keys when object is expanded
