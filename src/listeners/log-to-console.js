@@ -126,7 +126,10 @@ export let logToConsole = function(cfg = {}) {
         msg
       } = entry;
       if (duration) {
-        msg = `${msg} - took ${duration.ms} ms (${duration.human})`;
+        msg = `${msg} - took ${duration.ms} ms`;
+        if (duration.ms > 1000) {
+          msg = `${msg} (${duration.human})`;
+        }
       }
 
       msgFormat = '\n%s';
