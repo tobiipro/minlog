@@ -131,16 +131,14 @@ export default class MinLog {
     let rawEntry = _.cloneDeep(entry);
     rawEntry._args = args;
 
-    // eslint-disable-next-line require-atomic-updates
-    entry = await _.reduce(this.serializers, async (entryPromise, serializer) => {
-      let entry = await entryPromise;
-      entry = await serializer({entry, logger: this, rawEntry});
-      return Promise.resolve(entry);
-    }, Promise.resolve(entry));
+    for (let serializer of this.serializers) {
+      // eslint-disable-next-line require-atomic-updates
+      entry = await _.alwaysPromise(serializer({entry, logger: this, rawEntry}));
+    }
 
-    _.forEach(this.listeners, (listener) => {
-      listener({entry, logger: this, rawEntry});
-    });
+    for (let listener of this.listeners) {
+      await _.alwaysPromise(listener({entry, logger: this, rawEntry}));
+    }
   }
 
   async trackTime(label, fn) {
