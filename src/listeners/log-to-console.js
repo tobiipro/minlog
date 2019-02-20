@@ -1,4 +1,5 @@
 import _ from 'lodash-firecloud';
+import fastSafeStringify from 'fast-safe-stringify';
 import moment from 'moment';
 
 let _isBrowser = typeof window !== 'undefined';
@@ -181,7 +182,7 @@ export let logToConsole = function(cfg = {}) {
 
       // fix for util.inspect having no indentation
       if (!_isBrowser) {
-        obj = JSON.stringify(obj, undefined, 2);
+        obj = fastSafeStringify(obj, undefined, 2);
       }
 
       extraArgs.push(obj);
