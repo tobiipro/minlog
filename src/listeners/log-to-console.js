@@ -6,6 +6,14 @@ let _isBrowser = typeof window !== 'undefined';
 let _isNode = typeof process !== 'undefined' && !_.isUndefined(_.get(process, 'versions.node'));
 let _isAwsLambda = _isNode && !_.isUndefined(process.env.LAMBDA_TASK_ROOT);
 
+// from https://github.com/Financial-Times/lambda-logger
+// This does make process.stdout.write a blocking function (process.stdout._handle.setBlocking(true);),
+// as AWS Lambda previously streamed to an output which was synchronous,
+// but has since changed to asynchronous behaviour, leading to lost logs.
+if (_isAwsLambda && _.isFunction(_.get(process, 'stdout._handle.setBlocking'))) {
+  process.stdout._handle.setBlocking(true);
+}
+
 let _levelToConsoleFun = function({level, levels}) {
   // on AWS Lambda the console.trace call will print '[object Object]'¯\_(ツ)_/¯
   // plus all console funs end up in a cloudwatch stream
@@ -108,7 +116,7 @@ export let logToConsole = function(cfg = {}) {
     }
     let prefixArgs = [
       maybeCss(color),
-      _isAwsLambda ? '' : now,
+      now,
       _.isUndefined(cfg.contextId) ? '' : cfg.contextId,
       maybeCss('font-weight: bold'),
       formattedLevelName,
@@ -191,6 +199,12 @@ export let logToConsole = function(cfg = {}) {
       ...msgArgs,
       ...extraArgs
     ];
+
+    if (_isAwsLambda) {
+      // eslint-disable-next-line global-require
+      process.stdout.write(require('util').format(format, ...vars));
+      return;
+    }
 
     // eslint-disable-next-line no-console
     console[consoleFun](format, ...vars);
