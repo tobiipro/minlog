@@ -72,6 +72,7 @@ export let logToConsole = function(cfg = {}) {
     return hasCssSupport ? css : '';
   };
 
+  // eslint-disable-next-line complexity
   return async function({entry, logger, rawEntry}) {
     if (_.filter(rawEntry._args).length === 1 && rawEntry._args[0]._babelSrc) {
       return;
@@ -99,7 +100,8 @@ export let logToConsole = function(cfg = {}) {
     default:
     }
 
-    let maybeContextFormat = _.isUndefined(cfg.contextId) ? '' : ' %s';
+    let nowAndContextSep = _.isAwsLambda ? '\t' : ' ';
+    let maybeContextFormat = _.isUndefined(cfg.contextId) ? '' : `${nowAndContextSep}%s`;
 
     let src = '';
     if (entry._babelSrc) {
@@ -110,7 +112,7 @@ export let logToConsole = function(cfg = {}) {
       src = ` ${src.file}:${src.line}:${src.column}${src.function ? ` in ${src.function}()` : ''}`;
     }
 
-    let prefixFormat = `%c%s${maybeContextFormat} %c%s%c%s`;
+    let prefixFormat = `%c%s${maybeContextFormat}${nowAndContextSep}%c%s%c%s`;
     if (!hasCssSupport) {
       prefixFormat = _.replace(prefixFormat, /%c/g, hasCssSupport ? '%c' : '%s');
     }
@@ -202,7 +204,10 @@ export let logToConsole = function(cfg = {}) {
 
     if (_isAwsLambda) {
       // eslint-disable-next-line global-require
-      process.stdout.write(require('util').format(format, ...vars));
+      let msg = require('util').format(format, ...vars);
+      msg = _.replace(msg, /\n/g, '\r');
+      msg = `${msg}\n`;
+      process.stdout.write(msg);
       return;
     }
 
