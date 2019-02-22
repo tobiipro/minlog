@@ -91,17 +91,7 @@ export let logToConsole = function(cfg = {}) {
     default:
     }
 
-    let prefixFormat = '%c%s %c%s%c';
-    if (!hasCssSupport) {
-      prefixFormat = _.replace(prefixFormat, /%c/g, hasCssSupport ? '%c' : '%s');
-    }
-    let prefixArgs = [
-      maybeCss(color),
-      _isAwsLambda ? '' : now,
-      maybeCss('font-weight: bold'),
-      formattedLevelName,
-      maybeCss(color)
-    ];
+    let maybeContextFormat = _.isUndefined(cfg.contextId) ? '' : ' %s';
 
     let src = '';
     if (entry._babelSrc) {
@@ -112,11 +102,18 @@ export let logToConsole = function(cfg = {}) {
       src = ` ${src.file}:${src.line}:${src.column}${src.function ? ` in ${src.function}()` : ''}`;
     }
 
-    let maybeContextFormat = _.isUndefined(cfg.contextId) ? '' : ' in the %s context';
-    let srcFormat = `%s${maybeContextFormat}`;
-    let srcArgs = [
-      src,
-      _.isUndefined(cfg.contextId) ? '' : cfg.contextId
+    let prefixFormat = `%c%s${maybeContextFormat} %c%s%c%s`;
+    if (!hasCssSupport) {
+      prefixFormat = _.replace(prefixFormat, /%c/g, hasCssSupport ? '%c' : '%s');
+    }
+    let prefixArgs = [
+      maybeCss(color),
+      _isAwsLambda ? '' : now,
+      _.isUndefined(cfg.contextId) ? '' : cfg.contextId,
+      maybeCss('font-weight: bold'),
+      formattedLevelName,
+      maybeCss(color),
+      src
     ];
 
     let msgFormat = '';
@@ -188,10 +185,9 @@ export let logToConsole = function(cfg = {}) {
       extraArgs.push(obj);
     });
 
-    let format = `${prefixFormat}${srcFormat}:${msgFormat}${extraFormat}`;
+    let format = `${prefixFormat}:${msgFormat}${extraFormat}`;
     let vars = [
       ...prefixArgs,
-      ...srcArgs,
       ...msgArgs,
       ...extraArgs
     ];
