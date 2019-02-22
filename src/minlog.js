@@ -107,6 +107,7 @@ export default class MinLog {
     let src = getCallerInfo(5);
 
     let entry = {
+      _args: args,
       _time: new Date(),
       _level: levelCode,
       _src: src
@@ -129,7 +130,6 @@ export default class MinLog {
     });
 
     let rawEntry = _.cloneDeep(entry);
-    rawEntry._args = args;
 
     for (let serializer of this.serializers) {
       // eslint-disable-next-line require-atomic-updates
