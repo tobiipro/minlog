@@ -149,7 +149,7 @@ export let logToConsole = function(cfg = {}) {
     let extraFormat = '';
     let extraArgs = [];
 
-    let extra = _.omit(rawEntry, [
+    let extra = _.omit(entry, [
       '_args',
       '_babelSrc',
       '_duration',
