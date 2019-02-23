@@ -13,8 +13,7 @@
     "fast-safe-stringify": "^2.0.6",
     "lodash-firecloud": "git://github.com/tobiipro/lodash-firecloud.git#semver:~0.2.1",
     "moment": "^2.20.1",
-    "moment-timezone": "^0.5.14",
-    "stacktrace-js": "^2.0.0"
+    "moment-timezone": "^0.5.14"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.0",

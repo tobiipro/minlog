@@ -1,5 +1,4 @@
 import _ from 'lodash-firecloud';
-import stacktrace from 'stacktrace-js';
 
 export let serializeErr = async function({entry}) {
   let {
@@ -10,35 +9,23 @@ export let serializeErr = async function({entry}) {
     return entry;
   }
 
-  let stack;
-  try {
-    stack = await stacktrace.fromError(err);
-  } catch (stacktraceError) {
-    try {
-      stack = await stacktrace.fromError(err, {
-        offline: true
-      });
-    } catch (stacktraceError2) {
-      // eslint-disable-next-line no-console
-      console.error(stacktraceError2);
-    }
-    // eslint-disable-next-line no-console
-    console.error(stacktraceError);
-  }
+  let stack = _.split(err.stack || '', '\n');
+  stack = _.isEmpty(stack) ? undefined : stack;
 
-  entry.err = {
-    name: err.name,
-    message: err.message,
-    stack,
-
+  entry.err = _.pick(err, [
+    'name',
+    'message',
+    'uncaught',
     // custom
-    uncaught: err.uncaught
-  };
+    'inPromise'
+  ]);
+  entry.err.stack = stack;
 
-  let uncaught = err.uncaught ? 'Uncaught ' : '';
-  let inPromise = err.inPromise ? '(in promise) ' : '';
-  entry.msg = entry.msg ||
-    `${uncaught}${inPromise}${err.name}: ${err.message}`;
+  let uncaughtMsg = err.uncaught ? 'Uncaught ' : '';
+  let inPromiseMsg = err.inPromise ? '(in promise) ' : '';
+  let msg = _.isUndefined(stack) ? entry.err.message : _.join(entry.err.stack, '\n');
+  msg = `${uncaughtMsg}${inPromiseMsg}${entry.err.name}: ${msg}`;
+  entry.msg = entry.msg || msg;
 
   return entry;
 };
