@@ -2,7 +2,7 @@
   "private": true,
   "name": "minlog",
   "description": "minlog. A minimal JavaScript logger of events with structured data.",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "license": "Apache-2.0",
   "files": [
     "/index.js",
