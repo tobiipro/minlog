@@ -182,14 +182,26 @@ export let logToConsole = function(cfg = {}) {
     // devTools collapses objects with 'too many' keys,
     // so we output objects with only one key
     _.forEach(extra, function(value, key) {
-      extraArgs.push('\n');
+      if (_.isUndefined(value)) {
+        return;
+      }
+
       let obj = {
         [key]: value
       };
 
-      // fix for util.inspect having no indentation
-      if (!_isBrowser) {
+      if (_isNode) {
+        // prefer JSON output over util.inspect output
         obj = fastSafeStringify(obj, undefined, 2);
+        obj = `\n${obj}`;
+
+        if (_isAwsLambda) {
+          // maintain whitespace (looking at you AWS CloudWatch WebUI)
+          // by replacing space with non-breaking space
+          obj = _.replace(obj, / /g, ' ');
+        }
+      } else {
+        extraArgs.push('\n');
       }
 
       extraArgs.push(obj);
