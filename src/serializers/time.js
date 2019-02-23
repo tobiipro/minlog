@@ -1,6 +1,5 @@
 import _ from 'lodash-firecloud';
-import moment from 'moment';
-import momentTz from 'moment-timezone';
+import moment from 'dayjs';
 
 export let serializeTime = async function({entry}) {
   let {
@@ -15,7 +14,6 @@ export let serializeTime = async function({entry}) {
 
   entry._time = {
     stamp: moment(_time).toISOString(),
-    zone: momentTz.tz.guess(),
     utc_offset: moment(_time).utcOffset()
   };
 
@@ -25,7 +23,6 @@ export let serializeTime = async function({entry}) {
 
   entry._timeStart = {
     stamp: moment(_timeStart).toISOString(),
-    zone: momentTz.tz.guess(),
     utc_offset: moment(_timeStart).utcOffset()
   };
 
@@ -35,7 +32,6 @@ export let serializeTime = async function({entry}) {
 
   entry._timeEnd = {
     stamp: moment(_timeEnd).toISOString(),
-    zone: momentTz.tz.guess(),
     utc_offset: moment(_timeEnd).utcOffset()
   };
 

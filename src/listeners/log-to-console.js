@@ -1,6 +1,6 @@
 import _ from 'lodash-firecloud';
 import fastSafeStringify from 'fast-safe-stringify';
-import moment from 'moment';
+import moment from 'dayjs';
 
 let _isBrowser = typeof window !== 'undefined';
 let _isNode = typeof process !== 'undefined' && !_.isUndefined(_.get(process, 'versions.node'));
