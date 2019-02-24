@@ -143,16 +143,21 @@ export class MinLog {
     }
   }
 
-  async trackTime(label, fn) {
-    let entry = {
+  // trackTime(...logArgs, fn)
+  async trackTime(...args) {
+    let fn = args.pop();
+    args.push({
       _timeStart: new Date()
-    };
-    this.time(label, entry);
+    });
+
+    this.time(...args);
 
     await _.alwaysPromise(fn());
-    entry._timeEnd = new Date();
+    args.push({
+      _timeEnd: new Date()
+    });
 
-    this.time(label, entry);
+    this.time(...args);
   }
 }
 
