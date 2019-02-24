@@ -91,10 +91,12 @@ export let logToConsoleAwsLambda = function(cfg = {}) {
     ]);
 
     // src
-    formatArgs.push([
-      '%s',
-      src
-    ]);
+    if (src) {
+      formatArgs.push([
+        ' %s',
+        src
+      ]);
+    }
 
     // msg
     formatArgs.push([

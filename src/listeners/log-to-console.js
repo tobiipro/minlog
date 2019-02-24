@@ -270,7 +270,7 @@ export let logToConsole = function(cfg = {}) {
     // src
     if (src) {
       formatArgs.push([
-        '%s',
+        ' %s',
         src
       ]);
     }
