@@ -135,11 +135,11 @@ export class MinLog {
 
     for (let serializer of this.serializers) {
       // eslint-disable-next-line require-atomic-updates
-      entry = await _.alwaysPromise(serializer({entry, logger: this, rawEntry}));
+      entry = await serializer({entry, logger: this, rawEntry});
     }
 
     for (let listener of this.listeners) {
-      await _.alwaysPromise(listener({entry, logger: this, rawEntry}));
+      await listener({entry, logger: this, rawEntry});
     }
   }
 
@@ -152,7 +152,7 @@ export class MinLog {
 
     this.time(...args);
 
-    await _.alwaysPromise(fn());
+    await fn();
     args.push({
       _timeEnd: new Date()
     });
