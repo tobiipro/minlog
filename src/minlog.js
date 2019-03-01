@@ -36,8 +36,8 @@ export class MinLog {
   listeners = [];
 
   constructor({
-    serializers = this.serializers,
-    listeners = this.listeners,
+    serializers = [],
+    listeners = [],
     levels = {}
   } = {}) {
     this.serializers = _.clone(serializers);
