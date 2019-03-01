@@ -134,4 +134,30 @@ describe('minlog', function() {
       expect(logger.levelIsBeyondGroup('InfO', 'iNFo')).toBe(false);
     });
   });
+
+  describe('trackTime', function() {
+    let logger = new MinLog();
+
+    it('should invoke last arg as fn', async function() {
+      let fn = jest.fn();
+
+      await logger.trackTime(fn);
+      await logger.trackTime('a', fn);
+      await logger.trackTime('a', 'b', fn);
+      await logger.trackTime('a', 'b', 'c', fn);
+      await logger.trackTime('a', 'b', 'c', 'd', fn);
+
+      expect(fn).toHaveBeenCalledTimes(5);
+    });
+
+    it('should return fn result', async function() {
+      let fn = function() {
+        return 'result';
+      };
+
+      let result = await logger.trackTime(fn);
+
+      expect(result).toBe('result');
+    });
+  });
 });

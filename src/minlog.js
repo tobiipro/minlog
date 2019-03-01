@@ -152,12 +152,13 @@ export class MinLog {
 
     this.time(...args);
 
-    await fn();
+    let result = await fn();
     args.push({
       _timeEnd: new Date()
     });
 
     this.time(...args);
+    return result;
   }
 }
 
