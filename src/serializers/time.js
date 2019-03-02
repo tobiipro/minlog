@@ -15,6 +15,7 @@ export let serializeTime = async function({entry}) {
 
   entry._time = {
     stamp: moment(_time).toISOString(),
+    localStamp: moment(_time).toISOString(true),
     zone: momentTz.tz.guess(),
     utc_offset: moment(_time).utcOffset()
   };
@@ -25,6 +26,7 @@ export let serializeTime = async function({entry}) {
 
   entry._timeStart = {
     stamp: moment(_timeStart).toISOString(),
+    localStamp: moment(_timeStart).toISOString(true),
     zone: momentTz.tz.guess(),
     utc_offset: moment(_timeStart).utcOffset()
   };
@@ -35,6 +37,7 @@ export let serializeTime = async function({entry}) {
 
   entry._timeEnd = {
     stamp: moment(_timeEnd).toISOString(),
+    localStamp: moment(_timeEnd).toISOString(true),
     zone: momentTz.tz.guess(),
     utc_offset: moment(_timeEnd).utcOffset()
   };

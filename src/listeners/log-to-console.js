@@ -50,10 +50,13 @@ export let serialize = function({entry, logger, _rawEntry, cfg}) {
 
   cfg = _.defaults({}, cfg, {
     contextId,
-    level: 'trace'
+    level: 'trace',
+    localTime: false
   });
 
-  let now = moment(entry._time.stamp).utcOffset(entry._time.utc_offset).toISOString();
+  let now = cfg.localTime ?
+    entry._time.localStamp :
+    entry._time.stamp;
   let levelName = logger.levelToLevelName(entry._level);
   let formattedLevelName = _.padStart(_.toUpper(levelName), '5');
   let consoleFun = _levelToConsoleFun({
