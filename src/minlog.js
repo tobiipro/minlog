@@ -121,9 +121,13 @@ export class MinLog {
       };
 
       if (_.isError(arg) && _.isUndefined(entry.err)) {
-        amendEntry.err = arg;
+        amendEntry = {
+          err: arg
+        };
       } else if (_.isString(arg) && _.isUndefined(entry.msg)) {
-        amendEntry.msg = arg;
+        amendEntry = {
+          msg: arg
+        };
       } else if (_.isPlainObject(arg)) {
         _.defaults(amendEntry, arg);
       }
