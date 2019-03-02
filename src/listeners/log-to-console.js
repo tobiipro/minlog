@@ -109,9 +109,6 @@ export let serialize = function({entry, logger, _rawEntry, cfg}) {
     '_timeStart',
     'msg'
   ]);
-  extra = _.omitBy(extra, function(_value, key) {
-    return /^_arg[0-9+]$/.test(key);
-  });
 
   if (_isBrowser) {
     let ctx = {
