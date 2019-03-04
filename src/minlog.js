@@ -125,7 +125,7 @@ export class MinLog {
           msg: arg
         };
       } else if (_.isPlainObject(arg)) {
-        _.defaults(amendEntry, arg);
+        amendEntry = arg;
       }
 
       _.merge(entry, amendEntry);
