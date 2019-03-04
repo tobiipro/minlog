@@ -31,13 +31,9 @@ export let defaultLevels = {
 export class MinLog {
   levels = defaultLevels;
 
-  serializers = [];
-
-  listeners = [];
-
   constructor({
-    serializers = this.serializers,
-    listeners = this.listeners,
+    serializers = [],
+    listeners = [],
     levels = {}
   } = {}) {
     this.serializers = _.clone(serializers);
@@ -156,12 +152,13 @@ export class MinLog {
 
     this.time(...args);
 
-    await fn();
+    let result = await fn();
     args.push({
       _timeEnd: new Date()
     });
 
     this.time(...args);
+    return result;
   }
 }
 
