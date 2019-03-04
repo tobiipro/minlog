@@ -161,37 +161,4 @@ describe('minlog', function() {
       expect(result).toBe(expectedResult);
     });
   });
-
-  describe('logging call', function() {
-    it.only('should call listeners', async function() {
-      let stringArg = 'test';
-      let errArg = new Error();
-      let objArg = {
-        test: true
-      };
-      let symbolArg = Symbol('test');
-      let args = [
-        stringArg,
-        errArg,
-        objArg,
-        symbolArg
-      ];
-
-      let listener1 = async function({entry, _logger, rawEntry}) {
-        expect(rawEntry).toStrictEqual(entry);
-        expect(rawEntry.msg).toBe(stringArg);
-        expect(rawEntry.err).toBe(errArg);
-        expect(rawEntry).toMatchObject(objArg);
-        expect(rawEntry._args3).toBe(symbolArg);
-      };
-      let logger = new MinLog({
-        listeners: [
-          listener1
-        ]
-      });
-      logger.info(...args);
-
-      await listener1;
-    });
-  });
 });
