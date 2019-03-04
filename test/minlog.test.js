@@ -151,13 +151,14 @@ describe('minlog', function() {
     });
 
     it('should return fn result', async function() {
+      let expectedResult = Symbol('result');
       let fn = function() {
-        return 'result';
+        return expectedResult;
       };
 
       let result = await logger.trackTime(fn);
 
-      expect(result).toBe('result');
+      expect(result).toBe(expectedResult);
     });
   });
 });

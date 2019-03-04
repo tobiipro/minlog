@@ -31,10 +31,6 @@ export let defaultLevels = {
 export class MinLog {
   levels = defaultLevels;
 
-  serializers = [];
-
-  listeners = [];
-
   constructor({
     serializers = [],
     listeners = [],
