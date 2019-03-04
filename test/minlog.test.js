@@ -239,9 +239,9 @@ describe('minlog', function() {
 
       let d1 = _.defer();
       let serializer1 = async function(...args) {
-        let {
+        let [{
           entry
-        } = args;
+        }] = args;
         d1.resolve(...args);
         return entry;
       };
@@ -270,9 +270,9 @@ describe('minlog', function() {
       let d1Symbol = Symbol('d1');
       let d1 = _.defer();
       let serializer1 = async function(...args) {
-        let {
+        let [{
           entry
-        } = args;
+        }] = args;
         entry.d1 = d1Symbol;
         d1.resolve(...args);
         return entry;
@@ -306,8 +306,8 @@ describe('minlog', function() {
         d2.promise
       ]);
 
-      expect(entry1.d1Symbol).toBe(d1Symbol);
-      expect(entry2.d2Symbol).toBe(d2Symbol);
+      expect(entry1.d1).toBe(d1Symbol);
+      expect(entry2.d2).toBe(d2Symbol);
     });
   });
 });
