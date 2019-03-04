@@ -161,4 +161,153 @@ describe('minlog', function() {
       expect(result).toBe(expectedResult);
     });
   });
+
+  describe('logging call', function() {
+    it('should call one listener with the correct entry, logger and rawEntry', async function() {
+      let stringArg = 'test';
+      let errArg = new Error();
+      let objArg = {
+        test: true
+      };
+      let symbolArg = Symbol('test');
+      let args = [
+        stringArg,
+        errArg,
+        objArg,
+        symbolArg
+      ];
+
+      let d1 = _.defer();
+      let listener1 = d1.resolve;
+      let logger = new MinLog({
+        listeners: [
+          listener1
+        ]
+      });
+      logger.info(...args);
+
+      let {
+        entry,
+        logger: listenerLogger,
+        rawEntry
+      } = await d1.promise;
+
+      expect(rawEntry).toStrictEqual(entry);
+      expect(rawEntry.msg).toBe(stringArg);
+      expect(rawEntry.err).toBe(errArg);
+      expect(rawEntry).toMatchObject(objArg);
+      expect(rawEntry._arg3).toBe(symbolArg);
+      expect(listenerLogger).toBe(logger);
+    });
+
+    it('should call multiple listeners', async function() {
+      let d1 = _.defer();
+      let listener1 = d1.resolve;
+
+      let d2 = _.defer();
+      let listener2 = d2.resolve;
+
+      let logger = new MinLog({
+        listeners: [
+          listener1,
+          listener2
+        ]
+      });
+      logger.info();
+
+      await Promise.all([
+        d1.promise,
+        d2.promise
+      ]);
+
+      expect(true).toBe(true);
+    });
+
+    it('should call one serializer with the correct entry, logger and rawEntry', async function() {
+      let stringArg = 'test';
+      let errArg = new Error();
+      let objArg = {
+        test: true
+      };
+      let symbolArg = Symbol('test');
+      let args = [
+        stringArg,
+        errArg,
+        objArg,
+        symbolArg
+      ];
+
+      let d1 = _.defer();
+      let serializer1 = async function(...args) {
+        let {
+          entry
+        } = args;
+        d1.resolve(...args);
+        return entry;
+      };
+      let logger = new MinLog({
+        serializers: [
+          serializer1
+        ]
+      });
+      logger.info(...args);
+
+      let {
+        entry,
+        logger: serializerLogger,
+        rawEntry
+      } = await d1.promise;
+
+      expect(rawEntry).toStrictEqual(entry);
+      expect(rawEntry.msg).toBe(stringArg);
+      expect(rawEntry.err).toBe(errArg);
+      expect(rawEntry).toMatchObject(objArg);
+      expect(rawEntry._arg3).toBe(symbolArg);
+      expect(serializerLogger).toBe(logger);
+    });
+
+    it('should call multiple serializers', async function() {
+      let d1Symbol = Symbol('d1');
+      let d1 = _.defer();
+      let serializer1 = async function(...args) {
+        let {
+          entry
+        } = args;
+        entry.d1 = d1Symbol;
+        d1.resolve(...args);
+        return entry;
+      };
+
+      let d2Symbol = Symbol('d2');
+      let d2 = _.defer();
+      let serializer2 = async function(...args) {
+        let [{
+          entry
+        }] = args;
+        entry.d2 = d2Symbol;
+        d2.resolve(...args);
+        return entry;
+      };
+
+      let logger = new MinLog({
+        serializers: [
+          serializer1,
+          serializer2
+        ]
+      });
+      logger.info();
+
+      let [{
+        entry: entry1
+      }, {
+        entry: entry2
+      }] = await Promise.all([
+        d1.promise,
+        d2.promise
+      ]);
+
+      expect(entry1.d1Symbol).toBe(d1Symbol);
+      expect(entry2.d2Symbol).toBe(d2Symbol);
+    });
+  });
 });
