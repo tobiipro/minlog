@@ -62,10 +62,18 @@ In its raw form, the `entry` knows only of:
 * `_time`: a Date object
 * `_level`: the logging level
 * `_src`: the logging source (file, line and function)
-* `_argN`: the positional argument passed to the logging call
+* `_argN`: the positional argument passed to the logging call, where N is the numerical index
+* `_args`: the positional arguments passed to the logging call
 * `err`: the first Error object passed to the logging call
 * `msg`: the first String object passed to the logging call
 * properties of the plain objects passed to the logging call
+
+The logging call arguments are handled as below for convenience:
+
+* first String argument becomes `entry.msg`, if `entry.msg` is undefined at that point
+* first Error argument becomes `entry.err`, if `entry.err` is undefined at that point
+* all plain object arguments gets merged into `entry`
+* all other arguments are wrapped in a plain object `{_argN: <value>}` and merged into `entry`
 
 
 ## Clarifications
