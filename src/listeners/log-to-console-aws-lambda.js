@@ -3,6 +3,7 @@ import fastSafeStringify from 'fast-safe-stringify';
 import util from 'util';
 
 import {
+  logToConsole,
   serialize as serializeLogToConsole,
   toFormatArgs
 } from './log-to-console';
@@ -13,14 +14,6 @@ let _isBrowser = typeof window !== 'undefined';
 let _isNode = typeof process !== 'undefined' && !_.isUndefined(_.get(process, 'versions.node'));
 let _isAwsLambda = _isNode && !_.isUndefined(process.env.LAMBDA_TASK_ROOT);
 
-// from https://github.com/Financial-Times/lambda-logger
-// This does make process.stdout.write a blocking function (process.stdout._handle.setBlocking(true);),
-// as AWS Lambda previously streamed to an output which was synchronous,
-// but has since changed to asynchronous behaviour, leading to lost logs.
-if (_isAwsLambda && _.isFunction(_.get(process, 'stdout._handle.setBlocking'))) {
-  process.stdout._handle.setBlocking(true);
-}
-
 /*
 cfg has 1 property
 - level (optional, defaults to trace)
@@ -28,12 +21,21 @@ cfg has 1 property
 */
 
 export let logToConsoleAwsLambda = function(cfg = {}) {
+  if (!_isAwsLambda) {
+    // use vanilla logger e.g. behind aws-lambda-proxy
+    return logToConsole(cfg);
+  }
+
+  // from https://github.com/Financial-Times/lambda-logger
+  // This does make process.stdout.write a blocking function (process.stdout._handle.setBlocking(true);),
+  // as AWS Lambda previously streamed to an output which was synchronous,
+  // but has since changed to asynchronous behaviour, leading to lost logs.
+  if (_.isFunction(_.get(process, 'stdout._handle.setBlocking'))) {
+    process.stdout._handle.setBlocking(true);
+  }
+
   // eslint-disable-next-line complexity
   return async function({entry, logger, rawEntry}) {
-    if (!_isAwsLambda) {
-      return;
-    }
-
     if (_.filter(rawEntry._args).length === 1 && rawEntry._args[0]._babelSrc) {
       return;
     }
