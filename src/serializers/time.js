@@ -46,7 +46,7 @@ export let serializeTime = async function({entry}) {
   entry._duration = {
     stamp: duration.toISOString(),
     human: duration.humanize(),
-    ms: duration.milliseconds()
+    ms: duration.asMilliseconds()
   };
 
   return entry;
