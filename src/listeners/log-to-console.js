@@ -2,7 +2,7 @@ import _ from 'lodash-firecloud';
 import fastSafeStringify from 'fast-safe-stringify';
 
 let _isBrowser = typeof window !== 'undefined';
-let _isNode = typeof process !== 'undefined' && !_.isUndefined(_.get(process, 'versions.node'));
+let _isNode = typeof process !== 'undefined' && _.isDefined(_.get(process, 'versions.node'));
 
 let _levelToConsoleFun = function({level, levels}) {
   if (_.isString(level)) {
@@ -239,7 +239,7 @@ export let logToConsole = function(cfg = {}) {
     ]);
 
     // context
-    if (!_.isUndefined(cfg.contextId)) {
+    if (_.isDefined(cfg.contextId)) {
       formatArgs.push([
         ' %s',
         cfg.contextId

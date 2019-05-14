@@ -11,8 +11,8 @@ import {
 let _nonBreakingWhitespace = ' ';
 
 let _isBrowser = typeof window !== 'undefined';
-let _isNode = typeof process !== 'undefined' && !_.isUndefined(_.get(process, 'versions.node'));
-let _isAwsLambda = _isNode && !_.isUndefined(process.env.LAMBDA_TASK_ROOT);
+let _isNode = typeof process !== 'undefined' && _.isDefined(_.get(process, 'versions.node'));
+let _isAwsLambda = _isNode && _.isDefined(process.env.LAMBDA_TASK_ROOT);
 
 /*
 cfg has 1 property
