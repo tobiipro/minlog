@@ -2,7 +2,7 @@ import _ from 'lodash-firecloud';
 
 // See http://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
 export let getCallerInfo = function(level) {
-  // eslint-disable-next-line no-invalid-this, consistent-this
+  // eslint-disable-next-line babel/no-invalid-this, consistent-this
   let self = this;
 
   // 'strict' mode has no caller info
@@ -27,7 +27,7 @@ export let getCallerInfo = function(level) {
       function: caller.getFunctionName()
     };
   };
-  // eslint-disable-next-line no-unused-expressions
+  // eslint-disable-next-line babel/no-unused-expressions
   Error().stack;
 
   Error.stackTraceLimit = origLimit;
