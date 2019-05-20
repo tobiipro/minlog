@@ -45,6 +45,18 @@ export class MinLog {
     });
   }
 
+  child(childConfig = {}) {
+    let serializers = _.concat([], this.serializers, childConfig.serializers);
+    let listeners = _.concat([], this.listeners, childConfig.listeners);
+
+    let childLogger = new this.constructor(_.assign({}, childConfig, {
+      serializers,
+      listeners
+    }));
+
+    return childLogger;
+  }
+
   levelIsBeyondGroup(levelCodeOrName, groupCodeOrName) {
     let levelCode = this.levelToLevelCode(levelCodeOrName);
     let maxLevelCode = this.maxLevelCodeInGroup(groupCodeOrName);

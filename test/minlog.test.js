@@ -2,6 +2,57 @@ import MinLog from '../src/minlog';
 import _ from 'lodash-firecloud';
 
 describe('minlog', function() {
+  describe('child', function() {
+    it('should create children by appending serializers and listeners', function() {
+      let loggerConfigs = [];
+      loggerConfigs.push({});
+      loggerConfigs.push({
+        serializers: [
+          async function({entry}) {
+            return entry;
+          }
+        ]
+      });
+
+      _.forEach(loggerConfigs, function(loggerConfig = {}) {
+        _.merge(loggerConfig, {
+          serializers: [],
+          listeners: []
+        });
+
+        let newSerializer = async function({entry}) {
+          return entry;
+        };
+        let newListener = _.noop;
+
+        let logger = new MinLog(loggerConfig);
+        let childLogger = logger.child({
+          serializers: [
+            newSerializer
+          ],
+          listeners: [
+            newListener
+          ]
+        });
+
+        expect(logger.serializers).toHaveLength(loggerConfig.serializers.length);
+        expect(logger.listeners).toHaveLength(loggerConfig.listeners.length);
+
+        expect(logger.serializers).toStrictEqual(loggerConfig.serializers);
+        expect(logger.listeners).toStrictEqual(loggerConfig.listeners);
+
+        expect(childLogger.serializers).toHaveLength(loggerConfig.serializers.length + 1);
+        expect(childLogger.listeners).toHaveLength(loggerConfig.listeners.length + 1);
+
+        expect(_.slice(childLogger.serializers, 0, -1)).toStrictEqual(logger.serializers);
+        expect(_.slice(childLogger.listeners, 0, -1)).toStrictEqual(logger.listeners);
+
+        expect(_.last(childLogger.serializers)).toStrictEqual(newSerializer);
+        expect(_.last(childLogger.listeners)).toStrictEqual(newListener);
+      });
+    });
+  });
+
   describe('levels', function() {
     it('should create convenience methods (default levels)', function() {
       let logger = new MinLog();
