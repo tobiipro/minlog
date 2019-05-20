@@ -34,7 +34,7 @@ let log = new MinLog({
   ]
 });
 
-log.warn('This is a warning!');
+log.warn('This is a warning!'); // logToConsole will ignore this
 log.error('This is an error!');
 ```
 
