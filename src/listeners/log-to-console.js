@@ -57,7 +57,7 @@ export let serialize = function({entry, logger, _rawEntry, cfg}) {
     entry._time.localStamp :
     entry._time.stamp;
   let levelName = logger.levelToLevelName(entry._level);
-  let formattedLevelName = _.padStart(_.toUpper(levelName), '5');
+  let formattedLevelName = _.padStart(_.toUpper(levelName), 5);
   let consoleFun = _levelToConsoleFun({
     level: entry._level,
     levels: logger.levels
