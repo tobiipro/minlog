@@ -118,7 +118,7 @@ export class MinLog {
 
     let entry = {
       _args: args,
-      _time: new Date(),
+      _time: Date.now(),
       _level: levelCode,
       _src: src
     };
@@ -166,14 +166,14 @@ export class MinLog {
   async trackTime(...args) {
     let fn = args.pop();
     args.push({
-      _timeStart: new Date()
+      _timeStart: Date.now()
     });
 
     this.time(...args);
 
     let result = await fn();
     args.push({
-      _timeEnd: new Date()
+      _timeEnd: Date.now()
     });
 
     this.time(...args);

@@ -2,6 +2,19 @@ import _ from 'lodash-firecloud';
 import moment from 'moment';
 import momentTz from 'moment-timezone';
 
+let _maybeToDefinedMoment = function(timestamp) {
+  if (!_.isInteger(timestamp) || timestamp <= 0) {
+    return;
+  }
+
+  let result = moment(timestamp);
+  if (!result.isValid()) {
+    return;
+  }
+
+  return result;
+};
+
 export let serializeTime = async function({entry}) {
   let {
     _time,
@@ -9,37 +22,40 @@ export let serializeTime = async function({entry}) {
     _timeEnd
   } = entry;
 
-  if (!_.isDate(_time)) {
+  let momentTime = _maybeToDefinedMoment(_time);
+  if (!momentTime) {
     return entry;
   }
 
   entry._time = {
-    stamp: moment(_time).toISOString(),
-    localStamp: moment(_time).toISOString(true),
+    stamp: momentTime.toISOString(),
+    localStamp: momentTime.toISOString(true),
     zone: momentTz.tz.guess(),
-    utc_offset: moment(_time).utcOffset()
+    utc_offset: momentTime.utcOffset()
   };
 
-  if (!_.isDate(_timeStart)) {
+  let momentTimeStart = _maybeToDefinedMoment(_timeStart);
+  if (!momentTimeStart) {
     return entry;
   }
 
   entry._timeStart = {
-    stamp: moment(_timeStart).toISOString(),
-    localStamp: moment(_timeStart).toISOString(true),
+    stamp: momentTimeStart.toISOString(),
+    localStamp: momentTimeStart.toISOString(true),
     zone: momentTz.tz.guess(),
-    utc_offset: moment(_timeStart).utcOffset()
+    utc_offset: momentTimeStart.utcOffset()
   };
 
-  if (!_.isDate(_timeEnd)) {
+  let momentTimeEnd = _maybeToDefinedMoment(_timeEnd);
+  if (!momentTimeEnd) {
     return entry;
   }
 
   entry._timeEnd = {
-    stamp: moment(_timeEnd).toISOString(),
-    localStamp: moment(_timeEnd).toISOString(true),
+    stamp: momentTimeEnd.toISOString(),
+    localStamp: momentTimeEnd.toISOString(true),
     zone: momentTz.tz.guess(),
-    utc_offset: moment(_timeEnd).utcOffset()
+    utc_offset: momentTimeEnd.utcOffset()
   };
 
   let duration = moment.duration(_timeEnd - _timeStart);
