@@ -243,6 +243,44 @@ describe('minlog', function() {
         rawEntry
       } = await d1.promise;
 
+      expect(entry.msg).toBe(stringArg);
+      expect(entry.err).toBe(errArg);
+      expect(entry).toMatchObject(objArg);
+      expect(rawEntry).toBeUndefined();
+      expect(listenerLogger).toBe(logger);
+    });
+
+    it(`should call one listener with the correct entry, logger and rawEntry
+when requireRawEntry=true`, async function() {
+      let stringArg = 'test';
+      let errArg = new Error();
+      let objArg = {
+        test: true
+      };
+      let symbolArg = Symbol('test');
+      let args = [
+        stringArg,
+        errArg,
+        objArg,
+        symbolArg
+      ];
+
+      let d1 = _.defer();
+      let listener1 = d1.resolve;
+      let logger = new MinLog({
+        listeners: [
+          listener1
+        ],
+        requireRawEntry: true
+      });
+      logger.info(...args);
+
+      let {
+        entry,
+        logger: listenerLogger,
+        rawEntry
+      } = await d1.promise;
+
       expect(rawEntry).toStrictEqual(entry);
       expect(rawEntry.msg).toBe(stringArg);
       expect(rawEntry.err).toBe(errArg);
@@ -300,6 +338,49 @@ describe('minlog', function() {
         serializers: [
           serializer1
         ]
+      });
+      logger.info(...args);
+
+      let {
+        entry,
+        logger: serializerLogger,
+        rawEntry
+      } = await d1.promise;
+
+      expect(entry.msg).toBe(stringArg);
+      expect(entry.err).toBe(errArg);
+      expect(rawEntry).toBeUndefined();
+      expect(serializerLogger).toBe(logger);
+    });
+
+    it(`should call one serializer with the correct entry, logger and rawEntry
+when requireRawEntry=true`, async function() {
+      let stringArg = 'test';
+      let errArg = new Error();
+      let objArg = {
+        test: true
+      };
+      let symbolArg = Symbol('test');
+      let args = [
+        stringArg,
+        errArg,
+        objArg,
+        symbolArg
+      ];
+
+      let d1 = _.defer();
+      let serializer1 = async function(...args) {
+        let [{
+          entry
+        }] = args;
+        d1.resolve(...args);
+        return entry;
+      };
+      let logger = new MinLog({
+        serializers: [
+          serializer1
+        ],
+        requireRawEntry: true
       });
       logger.info(...args);
 

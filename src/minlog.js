@@ -34,11 +34,13 @@ export class MinLog {
   constructor({
     serializers = [],
     listeners = [],
-    levels = {}
+    levels = {},
+    requireRawEntry = false
   } = {}) {
     this.serializers = _.clone(serializers);
     this.listeners = _.clone(listeners);
     this.levels = _.merge(this.levels, levels);
+    this.requireRawEntry = requireRawEntry;
 
     _.forEach(this.levels, (levelCode, levelName) => {
       this[levelName] = _.bind(this.log, this, levelCode);
@@ -143,7 +145,10 @@ export class MinLog {
       _.merge(entry, amendEntry);
     });
 
-    let rawEntry = _.cloneDeep(entry);
+    let rawEntry;
+    if (this.requireRawEntry) {
+      rawEntry = _.cloneDeep(entry);
+    }
 
     for (let serializer of this.serializers) {
       // eslint-disable-next-line require-atomic-updates
