@@ -35,12 +35,14 @@ export class MinLog {
     serializers = [],
     listeners = [],
     levels = {},
-    requireRawEntry = false
+    requireRawEntry = false,
+    requireSrc = false
   } = {}) {
     this.serializers = _.clone(serializers);
     this.listeners = _.clone(listeners);
     this.levels = _.merge(this.levels, levels);
     this.requireRawEntry = requireRawEntry;
+    this.requireSrc = requireSrc;
 
     _.forEach(this.levels, (levelCode, levelName) => {
       this[levelName] = _.bind(this.log, this, levelCode);
@@ -116,7 +118,10 @@ export class MinLog {
       levelCode = this.levels[_.toLower(levelCodeOrName)];
     }
 
-    let src = getCallerInfo(5);
+    let src;
+    if (this.requireSrc) {
+      src = getCallerInfo(5);
+    }
 
     let entry = {
       _args: args,

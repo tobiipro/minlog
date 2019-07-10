@@ -48,7 +48,8 @@ The `MinLog` constructor takes:
 * `serializers`: a list of serializer functions
 * `listeners`: a list of listener functions
 * `levels`: a list of extra mapping from semantical level to numerical one
-* `requireRawEntry`: a flag to enable rawEntry in serializers/listeners. Defaults to false performance reasons.
+* `requireRawEntry`: a flag to enable rawEntry in serializers/listeners. Defaults to false for performance reasons.
+* `requireSrc`: a flag to enable _src (caller info) in entry. Defaults to false for performance reasons.
 
 The `serializer` and the `listener` functions take:
 
