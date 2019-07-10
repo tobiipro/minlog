@@ -34,11 +34,15 @@ export class MinLog {
   constructor({
     serializers = [],
     listeners = [],
-    levels = {}
+    levels = {},
+    requireRawEntry = false,
+    requireSrc = false
   } = {}) {
     this.serializers = _.clone(serializers);
     this.listeners = _.clone(listeners);
     this.levels = _.merge(this.levels, levels);
+    this.requireRawEntry = requireRawEntry;
+    this.requireSrc = requireSrc;
 
     _.forEach(this.levels, (levelCode, levelName) => {
       this[levelName] = _.bind(this.log, this, levelCode);
@@ -114,11 +118,14 @@ export class MinLog {
       levelCode = this.levels[_.toLower(levelCodeOrName)];
     }
 
-    let src = getCallerInfo(5);
+    let src;
+    if (this.requireSrc) {
+      src = getCallerInfo(5);
+    }
 
     let entry = {
       _args: args,
-      _time: new Date(),
+      _time: Date.now(),
       _level: levelCode,
       _src: src
     };
@@ -143,7 +150,10 @@ export class MinLog {
       _.merge(entry, amendEntry);
     });
 
-    let rawEntry = _.cloneDeep(entry);
+    let rawEntry;
+    if (this.requireRawEntry) {
+      rawEntry = _.cloneDeep(entry);
+    }
 
     for (let serializer of this.serializers) {
       // eslint-disable-next-line require-atomic-updates
@@ -166,14 +176,14 @@ export class MinLog {
   async trackTime(...args) {
     let fn = args.pop();
     args.push({
-      _timeStart: new Date()
+      _timeStart: Date.now()
     });
 
     this.time(...args);
 
     let result = await fn();
     args.push({
-      _timeEnd: new Date()
+      _timeEnd: Date.now()
     });
 
     this.time(...args);
