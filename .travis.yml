@@ -53,10 +53,10 @@ after_deploy: ./.ci.sh after_deploy
 
 jobs:
   include:
-    - name: "Node.js 8.10"
+    - name: "Node.js 10"
       language: node_js
-      node_js: "8.10"
-      env: CACHE_NAME=node-8.10
+      node_js: "10"
+      env: CACHE_NAME=node-10
 
     - name: "Node.js latest"
       language: node_js
