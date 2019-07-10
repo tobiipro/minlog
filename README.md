@@ -4,6 +4,8 @@
 inspired by [bunyan](https://github.com/trentm/node-bunyan)
 which was meant to be "a simple and fast JSON logging module",
 but in time got one too many built-in (aka forced) features.
+This minimalism translates to high performance as well,
+as seen in [benchmarks](https://github.com/tobiipro/minlog/issues/18).
 
 `minlog` works with 4 concepts:
 
