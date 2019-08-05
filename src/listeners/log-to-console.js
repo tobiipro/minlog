@@ -184,7 +184,7 @@ export let logToConsole = function(cfg = {}) {
       return;
     }
 
-    if (logger.levelIsBeyondGroup(entry._level, cfg.level)) {
+    if (_.isDefined(cfg.level) && logger.levelIsBeyondGroup(entry._level, cfg.level)) {
       return;
     }
 
