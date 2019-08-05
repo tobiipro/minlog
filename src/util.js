@@ -1,12 +1,15 @@
 import _ from 'lodash-firecloud';
 
+// see https://stackoverflow.com/a/10480227/465684
+let _isStrictMode = (function() {
+  // eslint-disable-next-line babel/no-invalid-this
+  return !this;
+})();
+
 // See http://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
 export let getCallerInfo = function(level) {
-  // eslint-disable-next-line babel/no-invalid-this, consistent-this
-  let self = this;
-
   // 'strict' mode has no caller info
-  if (self === undefined) {
+  if (_isStrictMode) {
     return;
   }
 
