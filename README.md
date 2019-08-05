@@ -26,8 +26,8 @@ import {
 
 let log = new MinLog({
   serializers: [
-    serializeTime,
-    serializeErr
+    serializeTime(),
+    serializeErr()
   ],
   listeners: [
     logToConsole({
