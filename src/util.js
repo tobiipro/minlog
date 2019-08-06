@@ -18,8 +18,8 @@ export let getCallerInfo = function(level) {
   Error.stackTraceLimit = level;
 
   let info;
-  Error.prepareStackTrace = function(_err, stack) {
-    let caller = stack[level - 1];
+  Error.prepareStackTrace = function(_err, structuredStackTrace) {
+    let caller = structuredStackTrace[level - 1];
     if (_.isUndefined(caller)) {
       return;
     }
