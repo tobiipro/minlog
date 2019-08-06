@@ -41,9 +41,7 @@ export let serialize = function({entry, logger, _rawEntry, cfg}) {
   let hasCssSupport = false;
 
   if (_isBrowser) {
-    if (window.parent === window) {
-      contextId = 'top';
-    }
+    contextId = window.parent === window ? 'top' : 'iframe';
     hasCssSupport = true;
   }
 
