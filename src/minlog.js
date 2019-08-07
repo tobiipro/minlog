@@ -1,9 +1,5 @@
 import _ from 'lodash-firecloud';
 
-import {
-  getCallerInfo
-} from './util';
-
 export let defaultLevels = {
   time: 70,
 
@@ -120,7 +116,17 @@ export class MinLog {
 
     let src;
     if (this.requireSrc) {
-      src = getCallerInfo(5);
+      let [
+        _thisCallSite,
+        callerCallSite
+      ] = _.getStackTrace(2);
+      if (_.isDefined(callerCallSite)) {
+        src = {
+          file: callerCallSite.getFileName(),
+          line: callerCallSite.getLineNumber(),
+          function: callerCallSite.getFunctionName()
+        };
+      }
     }
 
     let entry = {
