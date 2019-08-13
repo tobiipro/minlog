@@ -54,8 +54,7 @@ export let logToConsoleAwsLambda = function(cfg = {}) {
       now,
       formattedLevelName,
       src,
-      msg,
-      extra
+      msg
     } = serializeLogToConsole({entry, logger, rawEntry, cfg});
     cfg = cfg2;
 
@@ -64,15 +63,15 @@ export let logToConsoleAwsLambda = function(cfg = {}) {
     msg = `${msg}.`;
 
     // prefer JSON output over util.inspect output
-    extra = fastSafeStringify(extra, undefined, 2);
-    extra = `\n${extra}`;
+    let raw = fastSafeStringify(rawEntry, undefined, 2);
+    raw = `\n${raw}`;
 
     // maintain whitespace (looking at you AWS CloudWatch WebUI)
     // by replacing space with non-breaking space
-    extra = _.replace(extra, / /g, _nonBreakingWhitespace);
+    raw = _.replace(raw, / /g, _nonBreakingWhitespace);
 
     let extraArgs = [
-      extra
+      raw
     ];
 
     let formatArgs = [];
@@ -85,7 +84,7 @@ export let logToConsoleAwsLambda = function(cfg = {}) {
 
     // awsRequestId
     formatArgs.push([
-      ' %s',
+      '\t%s',
       _.get(entry, 'ctx.awsRequestId', '-')
     ]);
 
@@ -98,7 +97,7 @@ export let logToConsoleAwsLambda = function(cfg = {}) {
     // src
     if (src) {
       formatArgs.push([
-        ' %s',
+        '\t%s',
         src
       ]);
     }
