@@ -86,9 +86,7 @@ export let logToConsoleAwsLambda = function(cfg = {}) {
     // awsRequestId
     formatArgs.push([
       ' %s',
-      // skip for readability, still available in 'extra'
-      // entry.context.awsRequestId
-      '-'
+      _.get(entry, 'ctx.awsRequestId', '-')
     ]);
 
     // level name
