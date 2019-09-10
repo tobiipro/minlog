@@ -24,7 +24,9 @@ export let serializeErr = function() {
 
     let uncaughtMsg = err.uncaught ? 'Uncaught ' : '';
     let inPromiseMsg = err.inPromise ? '(in promise) ' : '';
-    let msg = _.isUndefined(entry.err.stack) ? `${entry.err.name}: ${entry.err.message}` : _.join(entry.err.stack, '\n');
+    let msg = _.isUndefined(entry.err.stack) ?
+      `${entry.err.name}: ${entry.err.message}` :
+      _.join(entry.err.stack, '\n');
     msg = `${uncaughtMsg}${inPromiseMsg}${msg}`;
     entry.msg = entry.msg || msg;
 
