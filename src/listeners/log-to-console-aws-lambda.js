@@ -63,7 +63,10 @@ export let logToConsoleAwsLambda = function(cfg = {}) {
     msg = `${msg}.`;
 
     // prefer JSON output over util.inspect output
-    let rawExtra = fastSafeStringify(rawEntry, undefined, 2);
+    let rawExtra = _.omit(rawEntry, [
+      '_args'
+    ]);
+    rawExtra = fastSafeStringify(rawEntry, undefined, 2);
     rawExtra = `\n${rawExtra}`;
 
     // maintain whitespace (looking at you AWS CloudWatch WebUI)
