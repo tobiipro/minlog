@@ -76,7 +76,7 @@ export let serialize = function({entry, logger, _rawEntry, cfg}) {
     src = '';
   } else if (_isBrowser) {
     // FIXME assumes webpack; could be a cfg flag, unless webpack can be detected
-    src = `@webpack:///./${src.file}:${src.line}:${src.column}${src.function ? ` in ${src.function}()` : ''}`;
+    src = `@webpack:///${src.file}:${src.line}:${src.column}${src.function ? ` in ${src.function}()` : ''}`;
   } else {
     src = `${src.file}:${src.line}:${src.column}${src.function ? ` in ${src.function}()` : ''}`;
   }
