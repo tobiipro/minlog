@@ -37,7 +37,7 @@ export let logToConsoleAwsLambda = function(cfg = {}) {
   // eslint-disable-next-line complexity
   return async function({entry, logger, rawEntry}) {
     // eslint-disable-next-line require-atomic-updates
-    cfg = await cfg;
+    cfg = _.isFunction(cfg) ? await cfg() : await cfg;
 
     if (_.isDefined(rawEntry) &&
         _.filter(rawEntry._args).length === 1 &&

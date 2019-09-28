@@ -45,7 +45,7 @@ log.error('This is an error!');
 
 All signatures take one argument, which is an object, with the properties acting as named arguments.
 
-The `MinLog` constructor takes:
+The `MinLog` constructor takes an object (or a Promise/function that returns an object) with:
 
 * `serializers`: a list of serializer functions
 * `listeners`: a list of listener functions
