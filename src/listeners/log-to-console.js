@@ -76,7 +76,7 @@ export let serialize = function({entry, logger, _rawEntry, cfg}) {
   if (_.isEmpty(src)) {
     src = '';
   } else {
-    _.default(src, {
+    _.defaults(src, {
       // column may only be available in _babelSrc
       // prefer a default, over not printing `:?` for structured parsing, with no optional groups
       column: '?'
