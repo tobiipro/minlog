@@ -72,13 +72,22 @@ export let serialize = function({entry, logger, _rawEntry, cfg}) {
   }
 
   let src = _.merge({}, entry._src, entry._babelSrc);
+
   if (_.isEmpty(src)) {
     src = '';
-  } else if (_isBrowser) {
-    // FIXME assumes webpack; could be a cfg flag, unless webpack can be detected
-    src = `@webpack:///${src.file}:${src.line}:${src.column}${src.function ? ` in ${src.function}()` : ''}`;
   } else {
-    src = `${src.file}:${src.line}:${src.column}${src.function ? ` in ${src.function}()` : ''}`;
+    _.default(src, {
+      // column may only be available in _babelSrc
+      // prefer a default, over not printing `:?` for structured parsing, with no optional groups
+      column: '?'
+    });
+    let inSrcFunction = src.function ? ` in ${src.function}()` : '';
+    if (_isBrowser) {
+      // FIXME assumes webpack; could be a cfg flag, unless webpack can be detected
+      src = `@webpack:///${src.file}:${src.file}:${src.column}${inSrcFunction}`;
+    } else {
+      src = `${src.file}:${src.file}:${src.column}${inSrcFunction}`;
+    }
   }
 
   let msg = entry.msg || '';
