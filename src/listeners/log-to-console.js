@@ -82,12 +82,7 @@ export let serialize = function({entry, logger, _rawEntry, cfg}) {
       column: '?'
     });
     let inSrcFunction = src.function ? ` in ${src.function}()` : '';
-    if (_isBrowser) {
-      // FIXME assumes webpack; could be a cfg flag, unless webpack can be detected
-      src = `@webpack:///${src.file}:${src.file}:${src.column}${inSrcFunction}`;
-    } else {
-      src = `${src.file}:${src.file}:${src.column}${inSrcFunction}`;
-    }
+    src = `${src.file}:${src.file}:${src.column}${inSrcFunction}`;
   }
 
   let msg = entry.msg || '';
