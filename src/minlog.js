@@ -116,15 +116,15 @@ export class MinLog {
 
     let src;
     if (this.requireSrc) {
-      let [
-        _thisCallSite,
-        callerCallSite
-      ] = _.getStackTrace(2);
-      if (_.isDefined(callerCallSite)) {
+      let callSites = _.getStackTrace(5);
+      let externalCallSite = _.find(callSites, function(callSite) {
+        return callSite.getFileName() !== __filename;
+      });
+      if (_.isDefined(externalCallSite)) {
         src = {
-          file: callerCallSite.getFileName(),
-          line: callerCallSite.getLineNumber(),
-          function: callerCallSite.getFunctionName()
+          file: externalCallSite.getFileName(),
+          line: externalCallSite.getLineNumber(),
+          function: externalCallSite.getFunctionName()
         };
       }
     }
