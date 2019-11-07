@@ -2,6 +2,7 @@ import MinLog from '../../src/minlog';
 import _ from 'lodash-firecloud';
 
 import {
+  // @ts-ignore
   // eslint-disable-next-line import/named
   _levelToConsoleFun
 } from '../../src/listeners/log-to-console';

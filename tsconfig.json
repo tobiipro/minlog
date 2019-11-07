@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "module": "es6",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "target": "es2018"
+  },
+  "include": [
+    "src/**/*",
+    "test/**/*"
+  ]
+}

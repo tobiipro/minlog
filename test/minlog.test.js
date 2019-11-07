@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import MinLog from '../src/minlog';
 import _ from 'lodash-firecloud';
 
@@ -228,7 +230,7 @@ describe('minlog', function() {
         symbolArg
       ];
 
-      let d1 = _.defer();
+      let d1 = _.deferred();
       let listener1 = d1.resolve;
       let logger = new MinLog({
         listeners: [
@@ -265,7 +267,7 @@ when requireRawEntry=true`, async function() {
         symbolArg
       ];
 
-      let d1 = _.defer();
+      let d1 = _.deferred();
       let listener1 = d1.resolve;
       let logger = new MinLog({
         listeners: [
@@ -290,10 +292,10 @@ when requireRawEntry=true`, async function() {
     });
 
     it('should call multiple listeners', async function() {
-      let d1 = _.defer();
+      let d1 = _.deferred();
       let listener1 = d1.resolve;
 
-      let d2 = _.defer();
+      let d2 = _.deferred();
       let listener2 = d2.resolve;
 
       let logger = new MinLog({
@@ -326,7 +328,7 @@ when requireRawEntry=true`, async function() {
         symbolArg
       ];
 
-      let d1 = _.defer();
+      let d1 = _.deferred();
       let serializer1 = async function(...args) {
         let [{
           entry
@@ -368,7 +370,7 @@ when requireRawEntry=true`, async function() {
         symbolArg
       ];
 
-      let d1 = _.defer();
+      let d1 = _.deferred();
       let serializer1 = async function(...args) {
         let [{
           entry
@@ -400,7 +402,7 @@ when requireRawEntry=true`, async function() {
 
     it('should call multiple serializers', async function() {
       let d1Symbol = Symbol('d1');
-      let d1 = _.defer();
+      let d1 = _.deferred();
       let serializer1 = async function(...args) {
         let [{
           entry
@@ -411,7 +413,7 @@ when requireRawEntry=true`, async function() {
       };
 
       let d2Symbol = Symbol('d2');
-      let d2 = _.defer();
+      let d2 = _.deferred();
       let serializer2 = async function(...args) {
         let [{
           entry

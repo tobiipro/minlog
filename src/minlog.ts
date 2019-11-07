@@ -1,55 +1,48 @@
 import _ from 'lodash-firecloud';
+import defaultLevels from './default-levels';
 
-export let defaultLevels = {
-  time: 70,
+import {
+  MinLogEntry,
+  MinLogLevel,
+  MinLogLevelCode,
+  MinLogLevelName,
+  MinLogLevelNameToCode,
+  MinLogListener,
+  MinLogOptions,
+  MinLogSerializer
+} from './types';
 
-  // npm alias
-  fatal: 0, // emergency
-  verbose: 70, // debug
-  silly: 80,
-
-  // https://tools.ietf.org/html/rfc3164 (multiplier 10)
-  emergency: 0,
-  alert: 10,
-  critical: 20,
-  error: 30,
-  warning: 40,
-  notice: 50,
-  informational: 60,
-  debug: 70,
-
-  // console
-  warn: 40, // warning
-  info: 60, // informational
-  trace: 90
+type MinLogDefaultLevelLogFns = {
+  [TKey in keyof (typeof defaultLevels)]: (...args) => Promise<void>;
 };
 
 export class MinLog {
-  levels = defaultLevels;
+  serializers: MinLogSerializer[] = [];
 
-  constructor({
-    serializers = [],
-    listeners = [],
-    levels = {},
-    requireRawEntry = false,
-    requireSrc = false
-  } = {}) {
-    this.serializers = _.clone(serializers);
-    this.listeners = _.clone(listeners);
-    this.levels = _.merge(this.levels, levels);
-    this.requireRawEntry = requireRawEntry;
-    this.requireSrc = requireSrc;
+  listeners: MinLogListener[] = [];
+
+  levels: MinLogLevelNameToCode = defaultLevels;
+
+  requireRawEntry: boolean = false;
+
+  requireSrc: boolean = false;
+
+  time: (...args) => Promise<void>;
+
+  constructor(options: MinLogOptions = {}) {
+    _.mergeConcatArrays(this, options);
 
     _.forEach(this.levels, (levelCode, levelName) => {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       this[levelName] = _.bind(this.log, this, levelCode);
     });
   }
 
-  child(childConfig = {}) {
-    let serializers = _.concat([], this.serializers, childConfig.serializers);
-    let listeners = _.concat([], this.listeners, childConfig.listeners);
+  child(childOptions: MinLogOptions = {}): MinLog {
+    let serializers = _.concat([], this.serializers, childOptions.serializers);
+    let listeners = _.concat([], this.listeners, childOptions.listeners);
 
-    let childLogger = new this.constructor(_.assign({}, childConfig, {
+    let childLogger = new (this.constructor as typeof MinLog)(_.assign({}, childOptions, {
       serializers,
       listeners
     }));
@@ -57,22 +50,25 @@ export class MinLog {
     return childLogger;
   }
 
-  levelIsBeyondGroup(levelCodeOrName, groupCodeOrName) {
+  levelIsBeyondGroup(
+    levelCodeOrName: MinLogLevel,
+    groupCodeOrName: MinLogLevel
+  ): boolean {
     let levelCode = this.levelToLevelCode(levelCodeOrName);
     let maxLevelCode = this.maxLevelCodeInGroup(groupCodeOrName);
     return levelCode > maxLevelCode;
   }
 
-  levelToLevelCode(levelCodeOrName) {
-    if (_.isInteger(levelCodeOrName)) {
+  levelToLevelCode(levelCodeOrName: MinLogLevel): MinLogLevelCode {
+    if (_.isNumber(levelCodeOrName)) {
       let levelCode = levelCodeOrName;
       return levelCode;
     }
 
     let levelName = _.toLower(levelCodeOrName);
     if (/^lvl[0-9]+$/.test(levelName)) {
-      let levelCode = _.replace(levelName, /^lvl/, '');
-      levelCode = _.toInteger(levelCode);
+      let levelCodeStr = _.replace(levelName, /^lvl/, '');
+      let levelCode = _.toInteger(levelCodeStr);
       return levelCode;
     }
 
@@ -83,7 +79,7 @@ export class MinLog {
     return this.levels[levelName];
   }
 
-  levelToLevelName(levelCodeOrName) {
+  levelToLevelName(levelCodeOrName: MinLogLevel): MinLogLevelName {
     if (_.isString(levelCodeOrName)) {
       let levelName = _.toLower(levelCodeOrName);
 
@@ -95,11 +91,11 @@ export class MinLog {
     }
 
     let levelCode = levelCodeOrName;
-    let levelName = _.invert(this.levels)[levelCode] || `lvl${levelCode}`;
+    let levelName = _.defaultTo(_.invert(this.levels)[levelCode], `lvl${levelCode}`);
     return levelName;
   }
 
-  maxLevelCodeInGroup(levelCodeOrName) {
+  maxLevelCodeInGroup(levelCodeOrName: MinLogLevel): MinLogLevelCode {
     let levelCode = this.levelToLevelCode(levelCodeOrName);
 
     // round up levelCode to next level group, not inclusive
@@ -108,10 +104,12 @@ export class MinLog {
     return maxLevelCode;
   }
 
-  async log(levelCodeOrName, ...args) {
-    let levelCode = levelCodeOrName;
+  async log(levelCodeOrName: MinLogLevel, ...args): Promise<void> {
+    let levelCode: MinLogLevelCode;
     if (_.isString(levelCodeOrName)) {
       levelCode = this.levels[_.toLower(levelCodeOrName)];
+    } else {
+      levelCode = levelCodeOrName;
     }
 
     let src;
@@ -129,7 +127,7 @@ export class MinLog {
       }
     }
 
-    let entry = {
+    let entry: MinLogEntry = {
       _args: args,
       _time: Date.now(),
       _level: levelCode,
@@ -163,7 +161,7 @@ export class MinLog {
 
     for (let serializer of this.serializers) {
       // eslint-disable-next-line require-atomic-updates
-      entry = await serializer({entry, logger: this, rawEntry});
+      entry = await serializer({entry, logger: this as unknown as TypescriptMinLog, rawEntry});
       if (_.isUndefined(entry)) {
         break;
       }
@@ -174,17 +172,18 @@ export class MinLog {
     }
 
     for (let listener of this.listeners) {
-      await listener({entry, logger: this, rawEntry});
+      await listener({entry, logger: this as unknown as TypescriptMinLog, rawEntry});
     }
   }
 
   // trackTime(...logArgs, fn)
-  async trackTime(...args) {
+  async trackTime(...args): Promise<void> {
     let fn = args.pop();
     args.push({
       _timeStart: Date.now()
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.time(...args);
 
     let result = await fn();
@@ -192,9 +191,16 @@ export class MinLog {
       _timeEnd: Date.now()
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.time(...args);
     return result;
   }
 }
 
-export default MinLog;
+export type TypescriptMinLog = MinLog & {
+  new(options?: MinLogOptions): MinLog & MinLogDefaultLevelLogFns;
+}
+
+export let TypescriptMinLog = MinLog as TypescriptMinLog;
+
+export default TypescriptMinLog;
