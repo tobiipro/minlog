@@ -3,7 +3,7 @@ import _ from 'lodash-firecloud';
 
 describe('a sampling serializer', function() {
   let samplingCount = 0;
-  let samplingSerializer = async function({entry, _logger, _rawEntry}) {
+  let samplingSerializer = async function({entry}) {
     samplingCount = samplingCount + 1;
     if (samplingCount % 2 === 0) {
       return;
@@ -19,7 +19,7 @@ describe('a sampling serializer', function() {
         samplingSerializer
       ],
       listeners: [
-        async function({entry, _logger, _rawEntry}) {
+        async function({entry}) {
           entries.push(entry);
         }
       ]

@@ -14,8 +14,9 @@
     "/lib/"
   ],
   "dependencies": {
+    "@types/node": "^12.12.6",
     "fast-safe-stringify": "^2.0.6",
-    "lodash-firecloud": "git://github.com/tobiipro/lodash-firecloud.git#semver:~0.4.1",
+    "lodash-firecloud": "git://github.com/tobiipro/lodash-firecloud.git#semver:~0.5.0",
     "moment": "^2.20.1",
     "moment-timezone": "^0.5.14"
   },

@@ -2,8 +2,8 @@ import _ from 'lodash-firecloud';
 import moment from 'moment';
 import momentTz from 'moment-timezone';
 
-let _maybeToDefinedMoment = function(timestamp) {
-  if (!_.isInteger(timestamp) || timestamp <= 0) {
+let _maybeToDefinedMoment = function(timestamp: number | string): moment.Moment {
+  if (!_.isNumber(timestamp) || timestamp <= 0) {
     return;
   }
 
@@ -24,7 +24,7 @@ export let serializeTime = function() {
     } = entry;
 
     let momentTime = _maybeToDefinedMoment(_time);
-    if (!momentTime) {
+    if (_.isUndefined(momentTime)) {
       return entry;
     }
 
@@ -36,7 +36,7 @@ export let serializeTime = function() {
     };
 
     let momentTimeStart = _maybeToDefinedMoment(_timeStart);
-    if (!momentTimeStart) {
+    if (_.isUndefined(momentTimeStart)) {
       return entry;
     }
 
@@ -48,7 +48,7 @@ export let serializeTime = function() {
     };
 
     let momentTimeEnd = _maybeToDefinedMoment(_timeEnd);
-    if (!momentTimeEnd) {
+    if (_.isUndefined(momentTimeEnd)) {
       return entry;
     }
 

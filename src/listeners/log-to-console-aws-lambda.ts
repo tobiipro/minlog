@@ -3,6 +3,11 @@ import fastSafeStringify from 'fast-safe-stringify';
 import util from 'util';
 
 import {
+  MinLogLevel,
+  MinLogListener
+} from '../types';
+
+import {
   logToConsole,
   serialize as serializeLogToConsole,
   toFormatArgs
@@ -10,7 +15,6 @@ import {
 
 let _nonBreakingWhitespace = ' ';
 
-let _isBrowser = typeof window !== 'undefined';
 let _isNode = typeof process !== 'undefined' && _.isDefined(_.get(process, 'versions.node'));
 let _isAwsLambda = _isNode && _.isDefined(process.env.LAMBDA_TASK_ROOT);
 
@@ -20,7 +24,9 @@ cfg has 1 property
   Any log entry less important that cfg.level is ignored.
 */
 
-export let logToConsoleAwsLambda = function(cfg = {}) {
+export let logToConsoleAwsLambda = function(cfg: {
+  level?: MinLogLevel
+} = {}): MinLogListener {
   if (!_isAwsLambda) {
     // use vanilla logger e.g. behind aws-lambda-proxy
     return logToConsole(cfg);
@@ -31,6 +37,7 @@ export let logToConsoleAwsLambda = function(cfg = {}) {
   // as AWS Lambda previously streamed to an output which was synchronous,
   // but has since changed to asynchronous behaviour, leading to lost logs.
   if (_.isFunction(_.get(process, 'stdout._handle.setBlocking'))) {
+    // @ts-ignore
     process.stdout._handle.setBlocking(true);
   }
 
@@ -41,7 +48,7 @@ export let logToConsoleAwsLambda = function(cfg = {}) {
 
     if (_.isDefined(rawEntry) &&
         _.filter(rawEntry._args).length === 1 &&
-        rawEntry._args[0]._babelSrc) {
+        _.isDefined(rawEntry._args[0]._babelSrc)) {
       return;
     }
 
@@ -55,7 +62,9 @@ export let logToConsoleAwsLambda = function(cfg = {}) {
       formattedLevelName,
       src,
       msg
+    // @ts-ignore
     } = serializeLogToConsole({entry, logger, rawEntry, cfg});
+    // eslint-disable-next-line require-atomic-updates
     cfg = cfg2;
 
     msg = `${msg} `;
@@ -66,56 +75,61 @@ export let logToConsoleAwsLambda = function(cfg = {}) {
     let rawExtra = _.omit(rawEntry, [
       '_args'
     ]);
-    rawExtra = fastSafeStringify(rawEntry, undefined, 2);
-    rawExtra = `\n${rawExtra}`;
+    let rawExtraStr = fastSafeStringify(rawExtra, undefined, 2);
+    rawExtraStr = `\n${rawExtraStr}`;
 
     // maintain whitespace (looking at you AWS CloudWatch WebUI)
     // by replacing space with non-breaking space
-    rawExtra = _.replace(rawExtra, / /g, _nonBreakingWhitespace);
+    rawExtraStr = _.replace(rawExtraStr, / /g, _nonBreakingWhitespace);
 
     let extraArgs = [
-      rawExtra
+      rawExtraStr
     ];
 
-    let formatArgs = [];
+    let formatPairs = [];
 
     // timestamp
-    formatArgs.push([
+    formatPairs.push([
       '%s',
       now
     ]);
 
     // awsRequestId
-    formatArgs.push([
+    formatPairs.push([
       '\t%s',
       _.get(entry, 'ctx.awsRequestId', '-')
     ]);
 
     // level name
-    formatArgs.push([
+    formatPairs.push([
       '\t%s',
       formattedLevelName
     ]);
 
     // src
-    if (src) {
-      formatArgs.push([
+    if (_.isDefined(src)) {
+      formatPairs.push([
         '\t%s',
         src
       ]);
     }
 
     // msg
-    formatArgs.push([
+    formatPairs.push([
       '\n%s',
       msg
     ]);
 
-    formatArgs = toFormatArgs(...formatArgs);
+    let formatArgs = toFormatArgs(...formatPairs);
     formatArgs = _.concat(formatArgs, extraArgs);
 
+    let [
+      format,
+      ...params
+    ] = formatArgs;
+
     // eslint-disable-next-line global-require
-    let chunk = util.format(...formatArgs);
+    let chunk = util.format(format, ...params);
     chunk = _.replace(chunk, /\n/g, '\r');
     chunk = `${chunk}\n`;
     process.stdout.write(chunk);

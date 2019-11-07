@@ -1,10 +1,25 @@
+import TypescriptMinLog from '../minlog';
 import _ from 'lodash-firecloud';
 import fastSafeStringify from 'fast-safe-stringify';
+
+import {
+  MinLogEntry,
+  MinLogLevel,
+  MinLogLevelNameToCode,
+  MinLogListener,
+  MinLogRawEntry,
+  MinLogSerializedTime
+} from '../types';
+
+type FormatPair = string | [string, any];
 
 let _isBrowser = typeof window !== 'undefined';
 let _isNode = typeof process !== 'undefined' && _.isDefined(_.get(process, 'versions.node'));
 
-let _levelToConsoleFun = function({level, levels}) {
+let _levelToConsoleFun = function({level, levels}: {
+  level: MinLogLevel,
+  levels: MinLogLevelNameToCode
+}): string {
   if (_.isString(level)) {
     // eslint-disable-next-line prefer-destructuring
     level = levels[level];
@@ -36,7 +51,21 @@ cfg has 2 properties
   Any log entry less important that cfg.level is ignored.
 */
 
-export let serialize = function({entry, logger, _rawEntry, cfg}) {
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export let serialize = function({entry, logger, rawEntry: _rawEntry, cfg}: {
+  entry: MinLogEntry & {
+    _time: MinLogSerializedTime
+  },
+  logger: TypescriptMinLog,
+  rawEntry: MinLogRawEntry,
+  cfg?: {
+    contextId?: string,
+    level?: MinLogLevel,
+    localTime?: boolean,
+    localStamp?: number,
+    stamp?: number
+  }
+}) {
   let contextId;
   let hasCssSupport = false;
 
@@ -72,26 +101,27 @@ export let serialize = function({entry, logger, _rawEntry, cfg}) {
   }
 
   let src = _.merge({}, entry._src, entry._babelSrc);
+  let srcStr: string;
 
   if (_.isEmpty(src)) {
-    src = '';
+    srcStr = '';
   } else {
     _.defaults(src, {
       // column may only be available in _babelSrc
       // prefer a default, over not printing `:?` for structured parsing, with no optional groups
       column: '?'
     });
-    let inSrcFunction = src.function ? ` in ${src.function}()` : '';
-    src = `${src.file}:${src.file}:${src.column}${inSrcFunction}`;
+    let inSrcFunction = _.isDefined(src.function) ? ` in ${src.function}()` : '';
+    srcStr = `${src.file}:${src.file}:${src.column}${inSrcFunction}`;
   }
 
-  let msg = entry.msg || '';
-  if (msg) {
+  let msg = _.defaultTo(entry.msg, '');
+  if (!_.isEmpty(msg)) {
     let {
       _duration: duration
     } = entry;
 
-    if (duration) {
+    if (_.isDefined(duration)) {
       msg = `${msg} - took ${duration.ms} ms`;
       if (duration.ms > 1000) {
         msg = `${msg} (${duration.human})`;
@@ -122,9 +152,10 @@ export let serialize = function({entry, logger, _rawEntry, cfg}) {
   }
 
   // devTools console sorts keys when object is expanded
-  extra = _.toPairs(extra);
-  extra = _.sortBy(extra, 0);
-  extra = _.fromPairs(extra);
+  let extraPairs = _.toPairs(extra);
+  // eslint-disable-next-line lodash/prop-shorthand
+  extraPairs = _.sortBy(extraPairs, 0);
+  extra = _.fromPairs(extraPairs);
 
   return {
     cfg,
@@ -135,33 +166,33 @@ export let serialize = function({entry, logger, _rawEntry, cfg}) {
     formattedLevelName,
     consoleFun,
     color,
-    src,
+    src: srcStr,
     msg,
 
     extra
   };
 };
 
-export let toFormatArgs = function(...args) {
+export let toFormatArgs = function(...formatPairs: FormatPair[]): any[] {
   let {
     format,
     formatArgs
-  } = _.reduce(args, function(result, arg) {
+  } = _.reduce(formatPairs, function(result, formatPair) {
     let {
       format,
       formatArgs
     } = result;
 
-    if (_.isString(arg)) {
-      format.push(arg);
+    if (_.isString(formatPair)) {
+      format.push(formatPair);
       return {
         format,
         formatArgs
       };
     }
 
-    format.push(arg[0]);
-    formatArgs.push(arg[1]);
+    format.push(formatPair[0]);
+    formatArgs.push(formatPair[1]);
 
     return {
       format,
@@ -172,12 +203,15 @@ export let toFormatArgs = function(...args) {
     formatArgs: []
   });
 
-  format = _.join(format, '');
-  formatArgs.unshift(format);
+  let formatStr = _.join(format, '');
+  formatArgs.unshift(formatStr);
   return formatArgs;
 };
 
-export let logToConsole = function(cfg = {}) {
+export let logToConsole = function(cfg: {
+  level?: MinLogLevel,
+  contextId?: string
+} = {}): MinLogListener {
   // eslint-disable-next-line complexity
   return async function({entry, logger, rawEntry}) {
     // eslint-disable-next-line require-atomic-updates
@@ -185,7 +219,7 @@ export let logToConsole = function(cfg = {}) {
 
     if (_.isDefined(rawEntry) &&
         _.filter(rawEntry._args).length === 1 &&
-        rawEntry._args[0]._babelSrc) {
+        _.isDefined(rawEntry._args[0]._babelSrc)) {
       return;
     }
 
@@ -203,7 +237,9 @@ export let logToConsole = function(cfg = {}) {
       src,
       msg,
       extra
+    // @ts-ignore
     } = serialize({entry, logger, rawEntry, cfg});
+    // eslint-disable-next-line require-atomic-updates
     cfg = cfg2;
 
     let extraArgs = [];
@@ -214,18 +250,18 @@ export let logToConsole = function(cfg = {}) {
         return;
       }
 
-      value = {
+      let valueObj = {
         [key]: value
       };
 
       if (_isBrowser) {
         extraArgs.push('\n');
-        extraArgs.push(value);
+        extraArgs.push(valueObj);
       } else if (_isNode) {
         // prefer JSON output over util.inspect output
-        value = fastSafeStringify(value, undefined, 2);
-        value = `\n${value}`;
-        extraArgs.push(value);
+        let valueStr = fastSafeStringify(valueObj, undefined, 2);
+        valueStr = `\n${valueStr}`;
+        extraArgs.push(valueStr);
       }
     });
 
@@ -274,7 +310,7 @@ export let logToConsole = function(cfg = {}) {
     }
 
     // src
-    if (src) {
+    if (_.isDefined(src)) {
       formatArgs.push([
         ' %s',
         src

@@ -2,16 +2,17 @@ module.exports = {
   root: true,
 
   extends: [
-    'firecloud/node'
+    'firecloud/node',
+    'firecloud/configs/browser.js'
   ],
 
-   overrides: [{
-     files: [
-       '*.ts'
-     ],
+  overrides: [{
+    files: [
+      '*.ts'
+    ],
 
-     extends: [
-       'firecloud/configs/typescript'
-     ]
-   }]
+    extends: [
+      'firecloud/configs/typescript'
+    ]
+  }]
 };
