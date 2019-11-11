@@ -13,6 +13,7 @@ import {
 } from '../types';
 
 import {
+  jsonStringifyReplacer,
   keepOnlyExtra
 } from '../util';
 
@@ -263,7 +264,7 @@ export let logToConsole = function(cfg: {
         extraArgs.push(valueObj);
       } else if (_isNode) {
         // prefer JSON output over util.inspect output
-        let valueStr = fastSafeStringify(valueObj, undefined, 2);
+        let valueStr = fastSafeStringify(valueObj, jsonStringifyReplacer, 2);
         valueStr = `\n${valueStr}`;
         extraArgs.push(valueStr);
       }

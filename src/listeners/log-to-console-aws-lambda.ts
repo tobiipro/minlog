@@ -8,6 +8,7 @@ import {
 } from '../types';
 
 import {
+  jsonStringifyReplacer,
   keepOnlyExtra
 } from '../util';
 
@@ -97,8 +98,8 @@ export let logToConsoleAwsLambda = function(cfg: {
     let rawExtra = _.omit(rawEntry, [
       '_args'
     ]);
-    let rawExtraStr = fastSafeStringify(rawExtra, undefined, 2);
     rawExtraStr = `\n${rawExtraStr}`;
+    let extraStr = fastSafeStringify(extra, jsonStringifyReplacer, 2);
 
     // maintain whitespace (looking at you AWS CloudWatch WebUI)
     // by replacing space with non-breaking space
