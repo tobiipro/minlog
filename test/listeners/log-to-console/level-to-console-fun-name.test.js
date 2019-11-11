@@ -1,11 +1,9 @@
-import MinLog from '../../src/minlog';
+import * as logToConsoleModule from '../../../src/listeners/log-to-console';
 import _ from 'lodash-firecloud';
 
 import {
-  // @ts-ignore
-  // eslint-disable-next-line import/named
-  _levelToConsoleFun
-} from '../../src/listeners/log-to-console';
+  MinLog
+} from '../../../src';
 
 describe('logToConsole listener', function() {
   describe('_levelToConsoleFun', function() {
@@ -23,7 +21,8 @@ describe('logToConsole listener', function() {
         ];
 
         _.forEach(levels, function(level) {
-          snapshot[level] = _levelToConsoleFun({
+          // @ts-ignore
+          snapshot[level] = logToConsoleModule._levelToConsoleFun({
             level,
             levels: instance.levels
           });
