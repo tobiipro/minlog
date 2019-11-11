@@ -1,3 +1,4 @@
+import * as jestDateMock from 'jest-date-mock';
 import * as logToConsoleModule from '../../../src/listeners/log-to-console';
 import _ from 'lodash-firecloud';
 
@@ -6,14 +7,29 @@ import {
 } from './logger';
 
 describe('logToConsole listener', function() {
-  it('should print an object', async function() {
-    let spyFormat = jest.spyOn(logToConsoleModule, 'format');
+  beforeEach(function() {
+    jestDateMock.advanceTo(0);
+  });
 
+  afterEach(function() {
+    jestDateMock.clear();
+  });
+
+  it('should print an object', async function() {
     let loggerCallArgs = [{
       key: 'This is a value.'
     }];
 
+    let snapshot;
+    let spyFormat = jest.spyOn(logToConsoleModule, 'format');
+
     spyFormat.mockImplementationOnce(function(consoleFun, format, ...formatArgs) {
+      snapshot = {
+        consoleFun,
+        format,
+        formatArgs
+      };
+
       let [
         _now,
         _level,
@@ -24,19 +40,11 @@ describe('logToConsole listener', function() {
 
       let object = JSON.parse(objectStr);
       let cond = _.isMatch(object, loggerCallArgs[0]);
-
-      if (!cond) {
-        // eslint-disable-next-line no-console
-        console.error({
-          consoleFun,
-          format,
-          formatArgs
-        });
-      }
       expect(cond).toBe(true);
     });
 
     await logger.error(...loggerCallArgs);
     expect(spyFormat).toHaveBeenCalledTimes(1);
+    expect(snapshot).toMatchSnapshot();
   });
 });

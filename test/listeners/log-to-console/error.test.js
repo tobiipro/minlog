@@ -1,3 +1,4 @@
+import * as jestDateMock from 'jest-date-mock';
 import * as logToConsoleModule from '../../../src/listeners/log-to-console';
 import _ from 'lodash-firecloud';
 
@@ -6,14 +7,33 @@ import {
 } from './logger';
 
 describe('logToConsole listener', function() {
-  it('should print an error', async function() {
-    let spyFormat = jest.spyOn(logToConsoleModule, 'format');
+  beforeEach(function() {
+    jestDateMock.advanceTo(0);
+  });
 
+  afterEach(function() {
+    jestDateMock.clear();
+  });
+
+  it('should print an error', async function() {
     let loggerCallArgs = [
       new Error('This is an error.')
     ];
+    // keep only one-level of the stacktrace
+    loggerCallArgs[0].stack = _.join([
+      _.split(loggerCallArgs[0].stack, '\n')[0]
+    ], '\n');
+
+    let snapshot;
+    let spyFormat = jest.spyOn(logToConsoleModule, 'format');
 
     spyFormat.mockImplementationOnce(function(consoleFun, format, ...formatArgs) {
+      snapshot = {
+        consoleFun,
+        format,
+        formatArgs
+      };
+
       let [
         _now,
         _level,
@@ -29,19 +49,11 @@ describe('logToConsole listener', function() {
           message: loggerCallArgs[0].message
         }
       });
-
-      if (!cond) {
-        // eslint-disable-next-line no-console
-        console.error({
-          consoleFun,
-          format,
-          formatArgs
-        });
-      }
       expect(cond).toBe(true);
     });
 
     await logger.error(...loggerCallArgs);
     expect(spyFormat).toHaveBeenCalledTimes(1);
+    expect(snapshot).toMatchSnapshot();
   });
 });
