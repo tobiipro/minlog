@@ -95,18 +95,18 @@ export let logToConsoleAwsLambda = function(cfg: {
     cfg = cfg2;
 
     // prefer JSON output over util.inspect output
-    let rawExtra = _.omit(rawEntry, [
+    let extra = _.omit(entry, [
       '_args'
     ]);
-    rawExtraStr = `\n${rawExtraStr}`;
     let extraStr = fastSafeStringify(extra, jsonStringifyReplacer, 2);
+    extraStr = `\n${extraStr}`;
 
     // maintain whitespace (looking at you AWS CloudWatch WebUI)
     // by replacing space with non-breaking space
-    rawExtraStr = _.replace(rawExtraStr, / /g, _nonBreakingWhitespace);
+    extraStr = _.replace(extraStr, / /g, _nonBreakingWhitespace);
 
     let extraArgs = [
-      rawExtraStr
+      extraStr
     ];
 
     let formatPairs = [];
