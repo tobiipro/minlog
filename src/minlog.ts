@@ -2,6 +2,7 @@ import _ from 'lodash-firecloud';
 import defaultLevels from './default-levels';
 
 import {
+  MinLogArg,
   MinLogEntry,
   MinLogLevel,
   MinLogLevelCode,
@@ -13,7 +14,7 @@ import {
 } from './types';
 
 type MinLogDefaultLevelLogFns = {
-  [TKey in keyof (typeof defaultLevels)]: (...args) => Promise<void>;
+  [TKey in keyof (typeof defaultLevels)]: (...args: MinLogArg[]) => Promise<void>;
 };
 
 export class MinLog {
@@ -104,7 +105,7 @@ export class MinLog {
     return maxLevelCode;
   }
 
-  async log(levelCodeOrName: MinLogLevel, ...args): Promise<void> {
+  async log(levelCodeOrName: MinLogLevel, ...args: MinLogArg[]): Promise<void> {
     let levelCode: MinLogLevelCode;
     if (_.isString(levelCodeOrName)) {
       levelCode = this.levels[_.toLower(levelCodeOrName)];
@@ -135,7 +136,7 @@ export class MinLog {
     };
 
     _.forEach(args, function(arg, index) {
-      let amendEntry = {
+      let amendEntry: object = {
         [`_arg${index}`]: arg
       };
 
@@ -148,6 +149,7 @@ export class MinLog {
           msg: arg
         };
       } else if (_.isPlainObject(arg)) {
+        arg = arg as object;
         amendEntry = arg;
       }
 

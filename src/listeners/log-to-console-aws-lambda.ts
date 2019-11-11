@@ -1,11 +1,15 @@
 import _ from 'lodash-firecloud';
 import fastSafeStringify from 'fast-safe-stringify';
-import util from 'util';
 
 import {
+  MinLogFormatArgs,
   MinLogLevel,
   MinLogListener
 } from '../types';
+
+import {
+  keepOnlyExtra
+} from '../util';
 
 import {
   logToConsole,
@@ -15,19 +19,41 @@ import {
 
 let _nonBreakingWhitespace = ' ';
 
-let _isNode = typeof process !== 'undefined' && _.isDefined(_.get(process, 'versions.node'));
-let _isAwsLambda = _isNode && _.isDefined(process.env.LAMBDA_TASK_ROOT);
+let _isAwsLambda = function(): boolean {
+  let isNode = typeof process !== 'undefined' && _.isDefined(_.get(process, 'versions.node'));
+  if (!isNode) {
+    return false;
+  }
 
-/*
-cfg has 1 property
-- level (optional, defaults to trace)
-  Any log entry less important that cfg.level is ignored.
-*/
+  let isAwsLambda = _.isDefined(process.env.LAMBDA_TASK_ROOT);
+  if (!isAwsLambda) {
+    return false;
+  }
+
+  return true;
+};
+
+export let format = function(...formatArgs: MinLogFormatArgs): void {
+  let [
+    format,
+    ...args
+  ] = formatArgs;
+
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  let chunk = require('util').format(format, ...args);
+  chunk = _.replace(chunk, /\n/g, '\r');
+  chunk = `${chunk}\n`;
+  process.stdout.write(chunk);
+};
 
 export let logToConsoleAwsLambda = function(cfg: {
+
+  /**
+   * Any log entry less important that cfg.level is ignored.
+   */
   level?: MinLogLevel
 } = {}): MinLogListener {
-  if (!_isAwsLambda) {
+  if (!_isAwsLambda()) {
     // use vanilla logger e.g. behind aws-lambda-proxy
     return logToConsole(cfg);
   }
@@ -66,10 +92,6 @@ export let logToConsoleAwsLambda = function(cfg: {
     } = serializeLogToConsole({entry, logger, rawEntry, cfg});
     // eslint-disable-next-line require-atomic-updates
     cfg = cfg2;
-
-    msg = `${msg} `;
-    msg = _.padEnd(msg, 255, _nonBreakingWhitespace);
-    msg = `${msg}.`;
 
     // prefer JSON output over util.inspect output
     let rawExtra = _.omit(rawEntry, [
@@ -115,24 +137,18 @@ export let logToConsoleAwsLambda = function(cfg: {
     }
 
     // msg
+    msg = `${msg} `;
+    msg = _.padEnd(msg, 255, _nonBreakingWhitespace);
+    msg = `${msg}.`;
     formatPairs.push([
       '\n%s',
       msg
     ]);
 
     let formatArgs = toFormatArgs(...formatPairs);
-    formatArgs = _.concat(formatArgs, extraArgs);
+    formatArgs.push(...extraArgs);
 
-    let [
-      format,
-      ...params
-    ] = formatArgs;
-
-    // eslint-disable-next-line global-require
-    let chunk = util.format(format, ...params);
-    chunk = _.replace(chunk, /\n/g, '\r');
-    chunk = `${chunk}\n`;
-    process.stdout.write(chunk);
+    format(...formatArgs);
   };
 };
 

@@ -4,12 +4,17 @@ import fastSafeStringify from 'fast-safe-stringify';
 
 import {
   MinLogEntry,
+  MinLogFormatArgs,
   MinLogLevel,
   MinLogLevelNameToCode,
   MinLogListener,
   MinLogRawEntry,
   MinLogSerializedTime
 } from '../types';
+
+import {
+  keepOnlyExtra
+} from '../util';
 
 type FormatPair = string | [string, any];
 
@@ -21,7 +26,6 @@ let _levelToConsoleFun = function({level, levels}: {
   levels: MinLogLevelNameToCode
 }): string {
   if (_.isString(level)) {
-    // eslint-disable-next-line prefer-destructuring
     level = levels[level];
   }
 
@@ -42,14 +46,6 @@ let _levelToConsoleFun = function({level, levels}: {
 
   return 'log';
 };
-
-/*
-cfg has 2 properties
-- contextId (optional, default to 'top' in browser and undefined elsewhere)
-  An identifier for the current "context".
-- level (optional, defaults to trace)
-  Any log entry less important that cfg.level is ignored.
-*/
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export let serialize = function({entry, logger, rawEntry: _rawEntry, cfg}: {
@@ -129,17 +125,7 @@ export let serialize = function({entry, logger, rawEntry: _rawEntry, cfg}: {
     }
   }
 
-  let extra = _.omit(entry, [
-    '_args',
-    '_babelSrc',
-    '_duration',
-    '_level',
-    '_src',
-    '_time',
-    '_timeEnd',
-    '_timeStart',
-    'msg'
-  ]);
+  let extra = keepOnlyExtra(entry);
 
   if (_isBrowser) {
     let ctx = {
@@ -173,7 +159,7 @@ export let serialize = function({entry, logger, rawEntry: _rawEntry, cfg}: {
   };
 };
 
-export let toFormatArgs = function(...formatPairs: FormatPair[]): any[] {
+export let toFormatArgs = function(...formatPairs: FormatPair[]): MinLogFormatArgs {
   let {
     format,
     formatArgs
@@ -205,11 +191,29 @@ export let toFormatArgs = function(...formatPairs: FormatPair[]): any[] {
 
   let formatStr = _.join(format, '');
   formatArgs.unshift(formatStr);
-  return formatArgs;
+  return formatArgs as [string, ...any[]];
+};
+
+export let format = function(consoleFun: string, ...formatArgs: MinLogFormatArgs): void {
+  let [
+    format,
+    ...args
+  ] = formatArgs;
+
+  // eslint-disable-next-line no-console
+  console[consoleFun](format, ...args);
 };
 
 export let logToConsole = function(cfg: {
+
+  /**
+   * Any log entry less important that cfg.level is ignored.
+   */
   level?: MinLogLevel,
+
+  /**
+   * A context id. In a browser environment, it defaults to 'top'/'iframe'.
+   */
   contextId?: string
 } = {}): MinLogListener {
   // eslint-disable-next-line complexity
@@ -265,25 +269,25 @@ export let logToConsole = function(cfg: {
       }
     });
 
-    let formatArgs = [];
+    let formatPairs = [];
 
     // color
     if (hasCssSupport) {
-      formatArgs.push([
+      formatPairs.push([
         '%c',
         color
       ]);
     }
 
     // timestamp
-    formatArgs.push([
+    formatPairs.push([
       '%s',
       now
     ]);
 
     // context
     if (_.isDefined(cfg.contextId)) {
-      formatArgs.push([
+      formatPairs.push([
         ' %s',
         cfg.contextId
       ]);
@@ -291,19 +295,19 @@ export let logToConsole = function(cfg: {
 
     // level name
     if (hasCssSupport) {
-      formatArgs.push([
+      formatPairs.push([
         '%c',
         'font-weight: bold'
       ]);
     }
-    formatArgs.push([
+    formatPairs.push([
       ' %s',
       formattedLevelName
     ]);
 
     // color
     if (hasCssSupport) {
-      formatArgs.push([
+      formatPairs.push([
         '%c',
         color
       ]);
@@ -311,7 +315,7 @@ export let logToConsole = function(cfg: {
 
     // src
     if (_.isDefined(src)) {
-      formatArgs.push([
+      formatPairs.push([
         ' %s',
         src
       ]);
@@ -323,11 +327,11 @@ export let logToConsole = function(cfg: {
       msg
     ]);
 
-    formatArgs = toFormatArgs(...formatArgs);
-    formatArgs = _.concat(formatArgs, extraArgs);
+    let formatArgs = toFormatArgs(...formatPairs);
+    formatArgs.push(...extraArgs);
 
     // eslint-disable-next-line no-console
-    console[consoleFun](...formatArgs);
+    format(consoleFun, ...formatArgs);
   };
 };
 

@@ -122,3 +122,10 @@ export type MinLogSerializer = (args: {
   logger: import('./minlog').TypescriptMinLog;
   rawEntry: MinLogRawEntry;
 }) => MaybePromise<MinLogEntry>;
+
+export type MinLogFormatArgs = [string, ...any[]];
+
+export type MinLogArg =
+  string |
+  Error |
+  object;
