@@ -322,7 +322,12 @@ export let logToConsole = function(cfg: {
     }
 
     // msg
-    formatArgs.push([
+    // eslint-disable-next-line lodash/prop-shorthand
+    let argNames = _.keys(keepOnlyExtra(rawEntry));
+    if (!_.isEmpty(argNames)) {
+      msg = `${msg} (${_.join(argNames, ', ')})`;
+    }
+    formatPairs.push([
       '\n%s',
       msg
     ]);
