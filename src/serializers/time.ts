@@ -3,7 +3,7 @@ import moment from 'moment';
 import momentTz from 'moment-timezone';
 
 let _maybeToDefinedMoment = function(timestamp: number | string): moment.Moment {
-  if (!_.isNumber(timestamp) || timestamp <= 0) {
+  if (!_.isNumber(timestamp) || timestamp < 0) {
     return;
   }
 
