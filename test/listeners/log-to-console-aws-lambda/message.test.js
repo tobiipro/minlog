@@ -7,26 +7,21 @@ import {
 
 describe('logToConsoleAwsLambda listener', function() {
   beforeEach(function() {
-    // eslint-disable-next-line global-require
-    let momentTz = require('moment-timezone');
-    let spyOnMomentTzGuess = jest.spyOn(momentTz.tz, 'guess');
-    spyOnMomentTzGuess.mockImplementation(function() {
-      return 'Europe/Stockholm';
-    });
-
+    let OriginalDate = Date;
     let dateStub = new Date(0);
-    dateStub.getTimezoneOffset = function() {
-      return 0;
-    };
     // @ts-ignore
     let spyOnGlobalDate = jest.spyOn(global, 'Date');
     // @ts-ignore
-    spyOnGlobalDate.mockImplementation(function() {
+    spyOnGlobalDate.mockImplementation(function(...args) {
+      if (args.length) {
+        let dateStub = new OriginalDate(...args);
+        return dateStub;
+      }
       return dateStub;
     });
     // @ts-ignore
     spyOnGlobalDate.now = function() {
-      return 0;
+      return dateStub.valueOf();
     };
   });
 
