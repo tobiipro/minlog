@@ -1,3 +1,4 @@
+import * as jestDateMock from 'jest-date-mock';
 import * as logToConsoleAwsLambdaModule from '../../../src/listeners/log-to-console-aws-lambda';
 import _ from 'lodash-firecloud';
 
@@ -8,6 +9,14 @@ import {
 let _nonBreakingWhitespace = ' ';
 
 describe('logToConsoleAwsLambda listener', function() {
+  beforeEach(function() {
+    jestDateMock.advanceTo(0);
+  });
+
+  afterEach(function() {
+    jestDateMock.clear();
+  });
+
   it('should print an error', async function() {
     let loggerCallArgs = [
       new Error('This is an error.')

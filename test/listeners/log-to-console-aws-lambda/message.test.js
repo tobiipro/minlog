@@ -1,3 +1,4 @@
+import * as jestDateMock from 'jest-date-mock';
 import * as logToConsoleAwsLambdaModule from '../../../src/listeners/log-to-console-aws-lambda';
 import _ from 'lodash-firecloud';
 
@@ -6,6 +7,14 @@ import {
 } from './logger';
 
 describe('logToConsoleAwsLambda listener', function() {
+  beforeEach(function() {
+    jestDateMock.advanceTo(0);
+  });
+
+  afterEach(function() {
+    jestDateMock.clear();
+  });
+
   it('should print a message', async function() {
     let loggerCallArgs = [
       'This is a message.'
