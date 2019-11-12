@@ -51,7 +51,6 @@
     "eslint-plugin-max-len-2": "^0.0.5",
     "eslint-plugin-no-null": "^1.0.2",
     "jest": "^24.1.0",
-    "jest-date-mock": "^1.0.7",
     "npm-publish-git": "git://github.com/andreineculau/npm-publish-git.git#semver:~0.0.8",
     "typescript": "^3.7.2"
   },

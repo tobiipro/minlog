@@ -1,4 +1,3 @@
-import * as jestDateMock from 'jest-date-mock';
 import * as logToConsoleAwsLambdaModule from '../../../src/listeners/log-to-console-aws-lambda';
 import _ from 'lodash-firecloud';
 
@@ -10,11 +9,31 @@ let _nonBreakingWhitespace = ' ';
 
 describe('logToConsoleAwsLambda listener', function() {
   beforeEach(function() {
-    jestDateMock.advanceTo(0);
+    // eslint-disable-next-line global-require
+    let momentTz = require('moment-timezone');
+    let spyOnMomentTzGuess = jest.spyOn(momentTz.tz, 'guess');
+    spyOnMomentTzGuess.mockImplementation(function() {
+      return 'Europe/Stockholm';
+    });
+
+    let dateStub = new Date(0);
+    dateStub.getTimezoneOffset = function() {
+      return 0;
+    };
+    // @ts-ignore
+    let spyOnGlobalDate = jest.spyOn(global, 'Date');
+    // @ts-ignore
+    spyOnGlobalDate.mockImplementation(function() {
+      return dateStub;
+    });
+    // @ts-ignore
+    spyOnGlobalDate.now = function() {
+      return 0;
+    };
   });
 
   afterEach(function() {
-    jestDateMock.clear();
+    jest.restoreAllMocks();
   });
 
   it('should print an error', async function() {
