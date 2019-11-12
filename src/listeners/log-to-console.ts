@@ -22,10 +22,14 @@ type FormatPair = string | [string, any];
 let _isBrowser = typeof window !== 'undefined';
 let _isNode = typeof process !== 'undefined' && _.isDefined(_.get(process, 'versions.node'));
 
-let _levelToConsoleFun = function({level, levels}: {
+let _levelToConsoleFun = function(args: {
   level: MinLogLevel,
   levels: MinLogLevelNameToCode
 }): string {
+  let {
+    level,
+    levels
+  } = args;
   if (_.isString(level)) {
     level = levels[level];
   }
@@ -49,7 +53,7 @@ let _levelToConsoleFun = function({level, levels}: {
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export let serialize = function({entry, logger, rawEntry: _rawEntry, cfg}: {
+export let serialize = function(args: {
   entry: MinLogEntry & {
     _time: MinLogSerializedTime
   },
@@ -63,6 +67,12 @@ export let serialize = function({entry, logger, rawEntry: _rawEntry, cfg}: {
     stamp?: number
   }
 }) {
+  let {
+    entry,
+    logger,
+    rawEntry: _rawEntry,
+    cfg
+  } = args;
   let contextId;
   let hasCssSupport = false;
 
