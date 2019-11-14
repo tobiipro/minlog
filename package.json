@@ -17,7 +17,7 @@
     "@types/moment-timezone": "^0.5.12",
     "@types/node": "^12.12.6",
     "fast-safe-stringify": "^2.0.6",
-    "lodash-firecloud": "git://github.com/tobiipro/lodash-firecloud.git#semver:~0.5.0",
+    "lodash-firecloud": "git://github.com/tobiipro/lodash-firecloud.git#semver:~0.5.3",
     "moment": "^2.20.1",
     "moment-timezone": "^0.5.14"
   },
@@ -38,7 +38,7 @@
     "babel-preset-firecloud": "git://github.com/tobiipro/babel-preset-firecloud.git#semver:~0.2.2",
     "eclint": "^2.6.0",
     "eslint": "^6.5.1",
-    "eslint-config-firecloud": "git://github.com/tobiipro/eslint-config-firecloud.git#semver:~0.10.0",
+    "eslint-config-firecloud": "git://github.com/tobiipro/eslint-config-firecloud.git#semver:~0.10.4",
     "eslint-plugin-async-await": "^0.0.0",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-dependencies": "^2.4.0",
