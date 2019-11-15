@@ -162,7 +162,6 @@ export class MinLog {
     }
 
     for (let serializer of this.serializers) {
-      // eslint-disable-next-line require-atomic-updates
       entry = await serializer({entry, logger: this as unknown as TypescriptMinLog, rawEntry});
       if (_.isUndefined(entry)) {
         break;

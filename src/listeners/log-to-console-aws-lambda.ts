@@ -40,7 +40,6 @@ export let format = function(...formatArgs: MinLogFormatArgs): void {
     ...args
   ] = formatArgs;
 
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   let chunk = require('util').format(format, ...args);
   chunk = _.replace(chunk, /\n/g, '\r');
   chunk = `${chunk}\n`;
@@ -70,7 +69,6 @@ export let logToConsoleAwsLambda = function(cfg: {
 
   // eslint-disable-next-line complexity
   return async function({entry, logger, rawEntry}) {
-    // eslint-disable-next-line require-atomic-updates
     cfg = _.isFunction(cfg) ? await cfg() : await cfg;
 
     if (_.isDefined(rawEntry) &&
@@ -91,7 +89,6 @@ export let logToConsoleAwsLambda = function(cfg: {
       msg
     // @ts-ignore
     } = serializeLogToConsole({entry, logger, rawEntry, cfg});
-    // eslint-disable-next-line require-atomic-updates
     cfg = cfg2;
 
     // prefer JSON output over util.inspect output

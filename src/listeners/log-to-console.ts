@@ -229,7 +229,6 @@ export let logToConsole = function(cfg: {
 } = {}): MinLogListener {
   // eslint-disable-next-line complexity
   return async function({entry, logger, rawEntry}) {
-    // eslint-disable-next-line require-atomic-updates
     cfg = _.isFunction(cfg) ? await cfg() : await cfg;
 
     if (_.isDefined(rawEntry) &&
@@ -254,7 +253,6 @@ export let logToConsole = function(cfg: {
       extra
     // @ts-ignore
     } = serialize({entry, logger, rawEntry, cfg});
-    // eslint-disable-next-line require-atomic-updates
     cfg = cfg2;
 
     let extraArgs = [];
