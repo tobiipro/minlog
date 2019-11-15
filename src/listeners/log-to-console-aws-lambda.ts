@@ -40,6 +40,7 @@ export let format = function(...formatArgs: MinLogFormatArgs): void {
     ...args
   ] = formatArgs;
 
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   let chunk = require('util').format(format, ...args);
   chunk = _.replace(chunk, /\n/g, '\r');
   chunk = `${chunk}\n`;
