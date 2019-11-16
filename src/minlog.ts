@@ -40,8 +40,14 @@ export class MinLog {
   }
 
   child(childOptions: MinLogOptions = {}): MinLog {
-    let serializers = _.concat([], this.serializers, childOptions.serializers);
-    let listeners = _.concat([], this.listeners, childOptions.listeners);
+    let serializers = [
+      ...this.serializers,
+      ...childOptions.serializers
+    ];
+    let listeners = [
+      ...this.listeners,
+      ...childOptions.listeners
+    ];
 
     let childLogger = new (this.constructor as typeof MinLog)(_.assign({}, childOptions, {
       serializers,
