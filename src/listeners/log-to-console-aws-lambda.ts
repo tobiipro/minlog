@@ -52,7 +52,7 @@ export let logToConsoleAwsLambda = function(cfg: {
   /**
    * Any log entry less important that cfg.level is ignored.
    */
-  level?: MinLogLevel
+  level?: MinLogLevel;
 } = {}): MinLogListener {
   if (!_isAwsLambda()) {
     // use vanilla logger e.g. behind aws-lambda-proxy

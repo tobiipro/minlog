@@ -206,7 +206,7 @@ export class MinLog {
 
 export type TypescriptMinLog = MinLog & {
   new(options?: MinLogOptions): MinLog & MinLogDefaultLevelLogFns;
-}
+};
 
 export let TypescriptMinLog = MinLog as TypescriptMinLog;
 

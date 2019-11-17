@@ -23,8 +23,8 @@ let _isBrowser = typeof window !== 'undefined';
 let _isNode = typeof process !== 'undefined' && _.isDefined(_.get(process, 'versions.node'));
 
 let _levelToConsoleFun = function(args: {
-  level: MinLogLevel,
-  levels: MinLogLevelNameToCode
+  level: MinLogLevel;
+  levels: MinLogLevelNameToCode;
 }): string {
   let {
     level,
@@ -55,17 +55,17 @@ let _levelToConsoleFun = function(args: {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export let serialize = function(args: {
   entry: MinLogEntry & {
-    _time: MinLogSerializedTime
-  },
-  logger: TypescriptMinLog,
-  rawEntry: MinLogRawEntry,
+    _time: MinLogSerializedTime;
+  };
+  logger: TypescriptMinLog;
+  rawEntry: MinLogRawEntry;
   cfg?: {
-    contextId?: string,
-    level?: MinLogLevel,
-    localTime?: boolean,
-    localStamp?: number,
-    stamp?: number
-  }
+    contextId?: string;
+    level?: MinLogLevel;
+    localTime?: boolean;
+    localStamp?: number;
+    stamp?: number;
+  };
 }) {
   let {
     entry,
@@ -220,12 +220,12 @@ export let logToConsole = function(cfg: {
   /**
    * Any log entry less important that cfg.level is ignored.
    */
-  level?: MinLogLevel,
+  level?: MinLogLevel;
 
   /**
    * A context id. In a browser environment, it defaults to 'top'/'iframe'.
    */
-  contextId?: string
+  contextId?: string;
 } = {}): MinLogListener {
   // eslint-disable-next-line complexity
   return async function({entry, logger, rawEntry}) {

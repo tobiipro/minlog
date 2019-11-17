@@ -10,7 +10,7 @@ export type MinLogLevel = MinLogLevelName | MinLogLevelCode;
 
 export type MinLogLevelNameToCode = {
   // [key: MinLogLevelName]: MinLogLevelCode
-  [key: string]: MinLogLevelCode
+  [key: string]: MinLogLevelCode;
 };
 
 export type MinLogOptions = {
@@ -26,15 +26,15 @@ export interface MinLogRawEntry {
   _time: number;
   _level: MinLogLevelCode;
   _src?: {
-    file: string,
-    line: number
-    function: string
+    file: string;
+    line: number;
+    function: string;
   };
   _babelSrc?: {
-    file: string,
-    line: number
-    column: number,
-    function: string
+    file: string;
+    line: number;
+    column: number;
+    function: string;
   };
   msg?: string;
   err?: Error;
@@ -60,9 +60,9 @@ export interface MinLogEntry extends Omit<MinLogRawEntry, '_time' | 'err'> {
   _time: MinLogRawEntry['_time'] | MinLogSerializedTime;
   err?: MinLogRawEntry['err'] | MinLogSerializedErr;
   _duration?: {
-    stamp: string,
-    human: string,
-    ms: number
+    stamp: string;
+    human: string;
+    ms: number;
   };
 }
 
