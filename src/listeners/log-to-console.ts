@@ -137,7 +137,7 @@ export let serialize = function(args: {
       column: '?'
     });
     let inSrcFunction = _.isDefined(src.function) ? ` in ${src.function}()` : '';
-    srcStr = `${src.file}:${src.file}:${src.column}${inSrcFunction}`;
+    srcStr = `${src.file}:${src.line}:${src.column}${inSrcFunction}`;
   }
 
   let msg = _.defaultTo(entry.msg, '');
