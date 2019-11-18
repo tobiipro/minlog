@@ -137,7 +137,7 @@ export let logToConsoleAwsLambda = function(cfg: {
 
     // msg
     // eslint-disable-next-line lodash/prop-shorthand
-    let argNames = _.keys(keepOnlyExtra(rawEntry));
+    let argNames = _.keys(keepOnlyExtra(entry));
     if (!_.isEmpty(argNames)) {
       msg = `${msg} (${_.join(argNames, ', ')})`;
     }

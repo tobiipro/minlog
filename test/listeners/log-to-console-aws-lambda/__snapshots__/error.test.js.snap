@@ -9,7 +9,7 @@ Object {
     "-",
     "ERROR",
     "",
-    "Error: This is an error.                                                                                                                                                                                                                                       .",
+    "Error: This is an error. (err)                                                                                                                                                                                                                                 .",
     "
 {
   \\"_time\\": {
