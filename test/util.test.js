@@ -14,11 +14,6 @@ class Fake {
   }
 }
 
-class Fake2 extends Fake {
-  // should be enough to trigger new lines on util.inspect(new Fake2())
-  fake2 = _.times(10, _.constant(1234567890));
-}
-
 class FakeWithToJSON extends Fake {
   // eslint-disable-next-line class-methods-use-this
   toJSON() {
@@ -56,23 +51,12 @@ describe('util', function() {
 
     it('should not proxy complex values, but use util.format instead', function() {
       let fake = new Fake();
-
-      let json = JSON.stringify(fake, jsonStringifyReplacer);
-      expect(json).not.toStrictEqual(JSON.stringify({
+      expect(JSON.parse(JSON.stringify(fake))).toMatchObject({
         fake: true
-      }));
-      expect(json).toMatchSnapshot();
-    });
-
-    it('should not proxy complex values, but use util.format instead and split lines', function() {
-      let fake = new Fake2();
+      });
 
       let json = JSON.stringify(fake, jsonStringifyReplacer);
-      expect(json).not.toStrictEqual(JSON.stringify({
-        fake: true,
-        fake2: true
-      }));
-      expect(json).toMatchSnapshot();
+      expect(json).not.toStrictEqual(JSON.stringify(fake));
     });
   });
 });
