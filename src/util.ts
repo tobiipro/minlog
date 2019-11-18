@@ -5,7 +5,8 @@ import {
 } from './types';
 
 export let jsonStringifyReplacer = function(_key, value): unknown {
-  if (_.isDefined(value) && _.isFunction(value.toJSON)) {
+  let toJSON = _.get(value, 'toJSON');
+  if (_.isFunction(toJSON)) {
     return value;
   }
 
