@@ -17,7 +17,25 @@ import {
   keepOnlyExtra
 } from '../util';
 
+import {
+  Fn,
+  MaybePromise
+} from 'lodash-firecloud/types';
+
 type FormatPair = string | [string, any];
+
+export interface Cfg {
+
+  /**
+   * Any log entry less important that cfg.level is ignored.
+   */
+  level?: MinLogLevel;
+
+  /**
+   * A context id. In a browser environment, it defaults to 'top'/'iframe'.
+   */
+  contextId?: string;
+}
 
 let _isBrowser = typeof window !== 'undefined';
 let _isNode = typeof process !== 'undefined' && _.isDefined(_.get(process, 'versions.node'));
@@ -215,18 +233,7 @@ export let format = function(consoleFun: string, ...formatArgs: MinLogFormatArgs
   console[consoleFun](format, ...args);
 };
 
-export let logToConsole = function(cfg: {
-
-  /**
-   * Any log entry less important that cfg.level is ignored.
-   */
-  level?: MinLogLevel;
-
-  /**
-   * A context id. In a browser environment, it defaults to 'top'/'iframe'.
-   */
-  contextId?: string;
-} = {}): MinLogListener {
+export let logToConsole = function(cfg: MaybePromise<Cfg> | Fn<MaybePromise<Cfg>> = {}): MinLogListener {
   // eslint-disable-next-line complexity
   return async function({entry, logger, rawEntry}) {
     cfg = _.isFunction(cfg) ? await cfg() : await cfg;

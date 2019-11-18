@@ -18,6 +18,19 @@ import {
   toFormatArgs
 } from './log-to-console';
 
+import {
+  Fn,
+  MaybePromise
+} from 'lodash-firecloud/types';
+
+export interface Cfg {
+
+  /**
+   * Any log entry less important that cfg.level is ignored.
+   */
+  level?: MinLogLevel;
+}
+
 let _nonBreakingWhitespace = ' ';
 
 let _isAwsLambda = function(): boolean {
@@ -47,13 +60,7 @@ export let format = function(...formatArgs: MinLogFormatArgs): void {
   process.stdout.write(chunk);
 };
 
-export let logToConsoleAwsLambda = function(cfg: {
-
-  /**
-   * Any log entry less important that cfg.level is ignored.
-   */
-  level?: MinLogLevel;
-} = {}): MinLogListener {
+export let logToConsoleAwsLambda = function(cfg: MaybePromise<Cfg> | Fn<MaybePromise<Cfg>> = {}): MinLogListener {
   if (!_isAwsLambda()) {
     // use vanilla logger e.g. behind aws-lambda-proxy
     return logToConsole(cfg);
