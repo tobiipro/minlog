@@ -99,6 +99,9 @@ export let logToConsoleAwsLambda = function(cfg: MaybePromise<Cfg> | Fn<MaybePro
     } = serializeLogToConsole({entry, logger, rawEntry, cfg});
     cfg = cfg2;
 
+    // use relative path, shorter output
+    src = _.replace(src, /\/var\/task\//g, '.');
+
     // prefer JSON output over util.inspect output
     let extra = _.omit(entry, [
       '_args'
