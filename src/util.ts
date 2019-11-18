@@ -23,7 +23,7 @@ export let jsonStringifyReplacer = function(_key, value): unknown {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  value = require('util').format('%s', value);
+  value = require('util').inspect(value);
   value = _.split(value, '\n');
   if (value.length < 2) {
     value = value[0];
