@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`util jsonStringifyReplacer should not proxy complex values, but use util.format instead 1`] = `"\\"Fake { fake: true }\\""`;
+
+exports[`util jsonStringifyReplacer should not proxy complex values, but use util.format instead and split lines 1`] = `"[\\"Fake2 {\\",\\"  fake: true,\\",\\"  fake2: [\\",\\"    1234567890, 1234567890,\\",\\"    1234567890, 1234567890,\\",\\"    1234567890, 1234567890,\\",\\"    1234567890, 1234567890,\\",\\"    1234567890, 1234567890\\",\\"  ]\\",\\"}\\"]"`;
