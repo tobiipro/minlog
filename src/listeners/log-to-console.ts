@@ -125,6 +125,7 @@ export let serialize = function(args: {
   default:
   }
 
+  // handle https://github.com/tobiipro/babel-preset-firecloud#babel-plugin-firecloud-src-arg-default-config-needed
   let src = _.merge({}, entry._src, entry._babelSrc);
   let srcStr: string;
 
@@ -238,6 +239,7 @@ export let logToConsole = function(cfg: MaybePromise<Cfg> | Fn<MaybePromise<Cfg>
   return async function({entry, logger, rawEntry}) {
     cfg = _.isFunction(cfg) ? await cfg() : await cfg;
 
+    // handle https://github.com/tobiipro/babel-preset-firecloud#babel-plugin-firecloud-src-arg-default-config-needed
     if (_.isDefined(rawEntry) &&
         _.filter(rawEntry._args).length === 1 &&
         _.isDefined(rawEntry._args[0]._babelSrc)) {
