@@ -119,17 +119,43 @@ export class MinLog {
       levelCode = levelCodeOrName;
     }
 
-    let src;
+    let src: {
+      file: string;
+      line: number;
+      function: string;
+    } | undefined;
+
     if (this.requireSrc) {
+      // handle https://github.com/tobiipro/babel-preset-firecloud#babel-plugin-firecloud-src-arg-default-config-needed
+      let babelSrcAbsoluteFilename = _.get(args[0] as object, '_babelSrc.filename') as string | undefined;
+      if (!_.startsWith(babelSrcAbsoluteFilename, '/')) {
+        babelSrcAbsoluteFilename = undefined;
+      }
+
       let callSites = _.getStackTrace(5);
-      let externalCallSite = _.find(callSites, function(callSite) {
-        return callSite.getFileName() !== __filename;
+      let callSite = _.find(callSites, function(callSite) {
+        let filename = callSite.getFileName();
+
+        if (_.isDefined(babelSrcAbsoluteFilename)) {
+          let matchesBabelFilename = filename === babelSrcAbsoluteFilename;
+          if (matchesBabelFilename) {
+            return true;
+          }
+        } else {
+          let isExternal = filename !== __filename;
+          if (isExternal) {
+            return true;
+          }
+        }
+
+        return false;
       });
-      if (_.isDefined(externalCallSite)) {
+
+      if (_.isDefined(callSite)) {
         src = {
-          file: externalCallSite.getFileName(),
-          line: externalCallSite.getLineNumber(),
-          function: externalCallSite.getFunctionName()
+          file: callSite.getFileName(),
+          line: callSite.getLineNumber(),
+          function: callSite.getFunctionName()
         };
       }
     }
