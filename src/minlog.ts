@@ -10,6 +10,7 @@ import {
   MinLogLevelNameToCode,
   MinLogListener,
   MinLogOptions,
+  MinLogRawEntry,
   MinLogSerializer
 } from './types';
 
@@ -191,9 +192,9 @@ export class MinLog {
       _.merge(entry, amendEntry);
     });
 
-    let rawEntry;
+    let rawEntry: MinLogRawEntry;
     if (this.requireRawEntry) {
-      rawEntry = _.cloneDeep(entry);
+      rawEntry = _.cloneDeep(entry) as unknown as MinLogRawEntry;
     }
 
     for (let serializer of this.serializers) {
