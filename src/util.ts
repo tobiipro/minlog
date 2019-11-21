@@ -33,7 +33,10 @@ export let jsonStringifyReplacer = function(_key, value): unknown {
 
 export let keepOnlyExtra = function<T extends MinLogEntry>(logEntry: T): Partial<T> {
   let extraLogEntry = _.pickBy(logEntry, function(_value, key) {
-    if (key === 'msg') {
+    if (_.includes([
+      'ctx',
+      'msg'
+    ], key)) {
       return false;
     }
     if (_.startsWith(key, '_')) {
