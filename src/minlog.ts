@@ -126,11 +126,11 @@ export class MinLog {
       file: string;
       line: number;
       function: string;
-    } | undefined;
+    };
 
     if (this.requireSrc) {
       // handle https://github.com/tobiipro/babel-preset-firecloud#babel-plugin-firecloud-src-arg-default-config-needed
-      let babelSrcAbsoluteFilename = _.get(args[0] as object, '_babelSrc.file') as string | undefined;
+      let babelSrcAbsoluteFilename = _.get(args[0] as object, '_babelSrc.file') as string;
       if (!_.startsWith(babelSrcAbsoluteFilename, '/')) {
         babelSrcAbsoluteFilename = undefined;
       }
