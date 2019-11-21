@@ -69,13 +69,13 @@ export interface MinLogEntry extends Omit<MinLogRawEntry, '_time' | 'err'> {
 export type MinLogListener = (args: {
   entry: MinLogEntry;
   logger: import('./minlog').TypescriptMinLog;
-  rawEntry: MinLogRawEntry;
+  rawEntry?: MinLogRawEntry;
 }) => MaybePromise<void>;
 
 export type MinLogSerializer = (args: {
   entry: MinLogEntry;
   logger: import('./minlog').TypescriptMinLog;
-  rawEntry: MinLogRawEntry;
+  rawEntry?: MinLogRawEntry;
 }) => MaybePromise<MinLogEntry>;
 
 export type MinLogFormatArgs = [string, ...any[]];
