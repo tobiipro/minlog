@@ -34,8 +34,11 @@ export class MinLog {
     _.mergeConcatArrays(this, options);
 
     _.forEach(this.levels, (levelCode, levelName) => {
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      this[levelName] = _.bind(this.log, this, levelCode);
+      // prefer not using _.bind or any other external function
+      // in order to improve function name detection via _.getStackTrace below
+      this[levelName] = ((...args) => {
+        return this.log(levelCode, ...args);
+      }) as LogFn;
     });
   }
 
