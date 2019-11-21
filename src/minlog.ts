@@ -127,7 +127,7 @@ export class MinLog {
 
     if (this.requireSrc) {
       // handle https://github.com/tobiipro/babel-preset-firecloud#babel-plugin-firecloud-src-arg-default-config-needed
-      let babelSrcAbsoluteFilename = _.get(args[0] as object, '_babelSrc.filename') as string | undefined;
+      let babelSrcAbsoluteFilename = _.get(args[0] as object, '_babelSrc.file') as string | undefined;
       if (!_.startsWith(babelSrcAbsoluteFilename, '/')) {
         babelSrcAbsoluteFilename = undefined;
       }
@@ -155,7 +155,7 @@ export class MinLog {
         src = {
           file: callSite.getFileName(),
           line: callSite.getLineNumber(),
-          function: callSite.getFunctionName()
+          function: _.defaultTo(callSite.getFunctionName(), undefined)
         };
       }
     }
