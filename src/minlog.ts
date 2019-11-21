@@ -37,9 +37,9 @@ export class MinLog {
     _.forEach(this.levels, (levelCode, levelName) => {
       // prefer not using _.bind or any other external function
       // in order to improve function name detection via _.getStackTrace below
-      this[levelName] = ((...args) => {
-        return this.log(levelCode, ...args);
-      }) as LogFn;
+      this[levelName] = async (...args) => {
+        return await this.log(levelCode, ...args);
+      };
     });
   }
 
