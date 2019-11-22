@@ -38,6 +38,12 @@ let log = new MinLog({
 
 log.warn('This is a warning!'); // logToConsole will ignore this
 log.error('This is an error!');
+
+// if you want to make sure that a log entry has been processed by all serializers/listeners
+await log.error('This is an error!').promise;
+
+// if you want to make sure that all previous log entries have been processed by all serializers/listeners
+await log.flush();
 ```
 
 
