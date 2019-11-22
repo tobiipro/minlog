@@ -194,28 +194,69 @@ describe('minlog', function() {
     it('should invoke last arg as fn', async function() {
       let fn = jest.fn();
 
-      await logger.trackTime(fn);
-      await logger.trackTime('a', fn);
-      await logger.trackTime('a', 'b', fn);
-      await logger.trackTime('a', 'b', 'c', fn);
-      await logger.trackTime('a', 'b', 'c', 'd', fn);
+      logger.trackTime(fn);
+      logger.trackTime('a', fn);
+      logger.trackTime('a', 'b', fn);
+      logger.trackTime('a', 'b', 'c', fn);
+      logger.trackTime('a', 'b', 'c', 'd', fn);
+      await logger.flush();
 
       expect(fn).toHaveBeenCalledTimes(5);
     });
 
     it('should return fn result', async function() {
       let expectedResult = Symbol('result');
-      let fn = function() {
+      let syncFn = function() {
+        return expectedResult;
+      };
+      let asyncFn = async function() {
         return expectedResult;
       };
 
-      let result = await logger.trackTime(fn);
+      let syncResult = logger.trackTime(syncFn);
+      let asyncResult = await logger.trackTime(asyncFn);
+      await logger.flush();
 
-      expect(result).toBe(expectedResult);
+      expect(syncResult).toBe(expectedResult);
+      expect(asyncResult).toBe(expectedResult);
     });
   });
 
   describe('logging call', function() {
+    it('should expose a promise, resolved after flushing the log entry', async function() {
+      let d1 = _.deferred();
+      let listener1 = d1.resolve;
+      let logger = new MinLog({
+        listeners: [
+          listener1
+        ]
+      });
+
+      expect(d1.state).toBe('pending');
+      let {
+        promise
+      } = logger.info('Test');
+      expect(d1.state).toBe('pending');
+      await promise;
+      expect(d1.state).toBe('resolved');
+    });
+
+    it('should have called the listeners when flushing the log entry', async function() {
+      let d1 = _.deferred();
+      let listener1 = d1.resolve;
+      let logger = new MinLog({
+        listeners: [
+          listener1
+        ]
+      });
+
+      expect(d1.state).toBe('pending');
+      logger.info('Test');
+      expect(d1.state).toBe('pending');
+      await logger.flush();
+      expect(d1.state).toBe('resolved');
+    });
+
     it('should call one listener with the correct entry, logger and rawEntry', async function() {
       let stringArg = 'test';
       let errArg = new Error();
@@ -238,6 +279,7 @@ describe('minlog', function() {
         ]
       });
       logger.info(...args);
+      await logger.flush();
 
       let {
         entry,
@@ -276,6 +318,7 @@ when requireRawEntry=true`, async function() {
         requireRawEntry: true
       });
       logger.info(...args);
+      await logger.flush();
 
       let {
         entry,
@@ -305,6 +348,7 @@ when requireRawEntry=true`, async function() {
         ]
       });
       logger.info();
+      await logger.flush();
 
       await Promise.all([
         d1.promise,
@@ -342,6 +386,7 @@ when requireRawEntry=true`, async function() {
         ]
       });
       logger.info(...args);
+      await logger.flush();
 
       let {
         entry,
@@ -385,6 +430,7 @@ when requireRawEntry=true`, async function() {
         requireRawEntry: true
       });
       logger.info(...args);
+      await logger.flush();
 
       let {
         entry,
@@ -430,6 +476,7 @@ when requireRawEntry=true`, async function() {
         ]
       });
       logger.info();
+      await logger.flush();
 
       let [{
         entry: entry1

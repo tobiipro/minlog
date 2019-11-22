@@ -14,7 +14,7 @@ describe('a sampling serializer', function() {
 
   it('should sample every other entry', async function() {
     let entries = [];
-    let instance = new MinLog({
+    let logger = new MinLog({
       serializers: [
         samplingSerializer
       ],
@@ -25,10 +25,12 @@ describe('a sampling serializer', function() {
       ]
     });
 
-    await instance.info('test1');
-    await instance.info('test2');
-    await instance.info('test3');
-    await instance.info('test4');
+    logger.info('test1');
+    logger.info('test2');
+    logger.info('test3');
+    logger.info('test4');
+
+    await logger.flush();
 
     expect(entries).toHaveLength(2);
     expect(entries[0]).toMatchObject({

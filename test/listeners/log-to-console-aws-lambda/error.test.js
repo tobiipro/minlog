@@ -75,7 +75,9 @@ describe('logToConsoleAwsLambda listener', function() {
       expect(cond).toBe(true);
     });
 
-    await logger.error(...loggerCallArgs);
+    logger.error(...loggerCallArgs);
+    await logger.flush();
+
     expect(spyFormat).toHaveBeenCalledTimes(1);
     expect(snapshot).toMatchSnapshot();
   });

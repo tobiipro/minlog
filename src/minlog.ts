@@ -14,11 +14,24 @@ import {
   MinLogSerializer
 } from './types';
 
+import {
+  Fn,
+  MaybePromise
+} from 'lodash-firecloud/types';
+
+interface MinLogLogFn {
+  (...args: MinLogArg[]): ReturnType<MinLog['log']>;
+}
+
 type MinLogDefaultLevelLogFns = {
-  [TKey in keyof (typeof defaultLevels)]: (...args: MinLogArg[]) => Promise<void>;
+  [TKey in keyof typeof defaultLevels]: MinLogLogFn;
 };
 
 export class MinLog {
+  _queue: Fn<Promise<void>, []>[] = [];
+
+  _queueFlushing: Promise<void>;
+
   serializers: MinLogSerializer[] = [];
 
   listeners: MinLogListener[] = [];
@@ -29,7 +42,7 @@ export class MinLog {
 
   requireSrc: boolean = false;
 
-  time: (...args) => Promise<void>;
+  time: MinLogLogFn;
 
   constructor(options: MinLogOptions = {}) {
     _.mergeConcatArrays(this, options);
@@ -37,9 +50,9 @@ export class MinLog {
     _.forEach(this.levels, (levelCode, levelName) => {
       // prefer not using _.bind or any other external function
       // in order to improve function name detection via _.getStackTrace below
-      this[levelName] = async (...args) => {
-        return await this.log(levelCode, ...args);
-      };
+      this[levelName] = ((...args) => {
+        return this.log(levelCode, ...args);
+      }) as MinLogLogFn;
     });
   }
 
@@ -115,7 +128,30 @@ export class MinLog {
     return maxLevelCode;
   }
 
-  async log(levelCodeOrName: MinLogLevel, ...args: MinLogArg[]): Promise<void> {
+  async flush(): Promise<void> {
+    await this._queueFlushing;
+
+    let deferred = _.deferred<void>();
+    this._queueFlushing = deferred.promise;
+
+    let flushed = false;
+    this._queue.push(async function() {
+      flushed = true;
+    });
+
+    // eslint-disable-next-line no-unmodified-loop-condition, @typescript-eslint/no-unnecessary-condition
+    while (!flushed) {
+      let fn = this._queue.shift();
+      await fn();
+    }
+
+    deferred.resolve();
+    this._queueFlushing = undefined;
+  }
+
+  log(levelCodeOrName: MinLogLevel, ...args: MinLogArg[]): {
+    promise: Promise<void>;
+  } {
     let levelCode: MinLogLevelCode;
     if (_.isString(levelCodeOrName)) {
       levelCode = this.levels[_.toLower(levelCodeOrName)];
@@ -197,39 +233,70 @@ export class MinLog {
       rawEntry = _.cloneDeep(entry) as unknown as MinLogRawEntry;
     }
 
-    for (let serializer of this.serializers) {
-      entry = await serializer({entry, logger: this as unknown as TypescriptMinLog, rawEntry});
-      if (_.isUndefined(entry)) {
-        break;
+    let deferred = _.deferred<void>();
+    this._queue.push(async () => {
+      for (let serializer of this.serializers) {
+        entry = await serializer({entry, logger: this as unknown as TypescriptMinLog, rawEntry});
+        if (_.isUndefined(entry)) {
+          break;
+        }
       }
-    }
 
-    if (_.isUndefined(entry)) {
-      return;
-    }
+      if (_.isUndefined(entry)) {
+        return;
+      }
 
-    for (let listener of this.listeners) {
-      await listener({entry, logger: this as unknown as TypescriptMinLog, rawEntry});
-    }
+      for (let listener of this.listeners) {
+        await listener({entry, logger: this as unknown as TypescriptMinLog, rawEntry});
+      }
+
+      deferred.resolve();
+    });
+
+    _.defer(async () => {
+      await this.flush();
+    });
+
+    return {
+      promise: deferred.promise
+    };
   }
 
   // trackTime(...logArgs, fn)
-  async trackTime(...args): Promise<void> {
-    let fn = args.pop();
+  /* eslint-disable lines-between-class-members, no-dupe-class-members */
+  trackTime<TFn extends Fn>(fn: TFn): ReturnType<TFn>;
+  trackTime<TFn extends Fn>(_arg1: MinLogArg, fn: TFn): ReturnType<TFn>;
+  trackTime<TFn extends Fn>(_arg1: MinLogArg, _arg2: MinLogArg, fn: TFn): ReturnType<TFn>;
+  trackTime<TFn extends Fn>(_arg1: MinLogArg, _arg2: MinLogArg, _arg3: MinLogArg, fn: TFn): ReturnType<TFn>;
+  trackTime<TFn extends Fn>(
+    _arg1: MinLogArg, _arg2: MinLogArg, _arg3: MinLogArg, _arg4: MinLogArg,
+    fn: TFn
+  ): ReturnType<TFn>;
+  trackTime<TFn extends Fn>(
+    _arg1: MinLogArg, _arg2: MinLogArg, _arg3: MinLogArg, _arg4: MinLogArg, _arg5: MinLogArg,
+    fn: TFn
+  ): ReturnType<TFn>;
+  /* eslint-enable lines-between-class-members, no-dupe-class-members */
+
+  // eslint-disable-next-line no-dupe-class-members
+  trackTime(...args: (MinLogArg | Fn)[]): MaybePromise<any> {
+    let fn = args.pop() as Fn<MaybePromise<any>>;
     args.push({
       _timeStart: Date.now()
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.time(...args);
 
-    let result = await fn();
-    args.push({
-      _timeEnd: Date.now()
+    let result = fn();
+    _.defer(async () => {
+      await result;
+      args.push({
+        _timeEnd: Date.now()
+      });
+
+      this.time(...args);
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.time(...args);
     return result;
   }
 }
