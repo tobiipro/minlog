@@ -2,6 +2,8 @@ import {
   MaybePromise
 } from 'lodash-firecloud/types';
 
+export type MinLog = import('./minlog').MinLog;
+
 export type MinLogLevelName = string;
 
 export type MinLogLevelCode = number;
