@@ -21,10 +21,10 @@ export let serializeErr = function(): MinLogSerializer {
     entry.err = _.pick(err, [
       'name',
       'message',
-      'uncaught',
       // custom
+      'uncaught',
       'inPromise'
-    ]) as unknown as MinLogSerializedErr;
+    ]) as MinLogSerializedErr;
     entry.err.stack = stack;
 
     let uncaughtMsg = entry.err.uncaught ? 'Uncaught ' : '';

@@ -21,6 +21,12 @@ export type MinLogOptions = {
   requireSrc?: boolean;
 };
 
+export interface MinLogErr extends Error {
+  // custom
+  uncaught?: boolean;
+  inPromise?: boolean;
+}
+
 export interface MinLogRawEntry {
   _args: any[];
   _time: number;
@@ -37,7 +43,7 @@ export interface MinLogRawEntry {
     function: string;
   };
   msg?: string;
-  err?: Error;
+  err?: MinLogErr;
 }
 
 export interface MinLogSerializedTime {
@@ -48,17 +54,13 @@ export interface MinLogSerializedTime {
   utc_offset: number;
 }
 
-export interface MinLogSerializedErr {
-  name: string;
-  message: string;
-  uncaught?: boolean;
-  inPromise?: boolean;
+export interface MinLogSerializedErr extends Omit<MinLogErr, 'stack'> {
   stack: string[];
 }
 
 export interface MinLogEntry extends Omit<MinLogRawEntry, '_time' | 'err'> {
   _time: MinLogRawEntry['_time'] | MinLogSerializedTime;
-  err?: MinLogRawEntry['err'] | MinLogSerializedErr;
+  err?: MinLogErr | MinLogSerializedErr;
   _duration?: {
     stamp: string;
     human: string;
