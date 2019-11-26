@@ -1,7 +1,7 @@
 import _ from 'lodash-firecloud';
 
 import {
-  MinLogSerializedErr,
+  MinLogSerializedError,
   MinLogSerializer
 } from '../types';
 
@@ -24,7 +24,7 @@ export let serializeErr = function(): MinLogSerializer {
       // custom
       'uncaught',
       'inPromise'
-    ]) as MinLogSerializedErr;
+    ]) as MinLogSerializedError;
     entry.err.stack = stack;
 
     let uncaughtMsg = entry.err.uncaught ? 'Uncaught ' : '';
