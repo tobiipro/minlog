@@ -15,7 +15,9 @@ import {
 } from './types';
 
 import {
+  Expand,
   Fn,
+  InstanceReplace,
   MaybePromise
 } from 'lodash-firecloud/types';
 
@@ -301,10 +303,12 @@ export class BaseMinLog {
   }
 }
 
+// instance type
 export type MinLog = BaseMinLog & MinLogDefaultLevelLogFns;
 
-export let MinLog = BaseMinLog as Omit<typeof BaseMinLog, 'prototype'> & {
-  new(options?: MinLogOptions): MinLog;
-};
+// constructor type
+export type MinLogConstructor = InstanceReplace<typeof BaseMinLog, MinLog>;
+
+export let MinLog = BaseMinLog as MinLogConstructor;
 
 export default MinLog;
