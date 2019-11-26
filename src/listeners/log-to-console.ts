@@ -1,4 +1,4 @@
-import TypescriptMinLog from '../minlog';
+import MinLog from '../minlog';
 import _ from 'lodash-firecloud';
 import fastSafeStringify from 'fast-safe-stringify';
 
@@ -75,7 +75,7 @@ export let serialize = function(args: {
   entry: MinLogEntry & {
     _time: MinLogSerializedTime;
   };
-  logger: TypescriptMinLog;
+  logger: MinLog;
   rawEntry: MinLogRawEntry;
   cfg?: {
     contextId?: string;

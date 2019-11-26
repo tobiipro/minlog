@@ -27,7 +27,7 @@ type MinLogDefaultLevelLogFns = {
   [TKey in keyof typeof defaultLevels]: MinLogLogFn;
 };
 
-export class MinLog {
+export class BaseMinLog {
   _queue: Fn<Promise<void>, []>[] = [];
 
   _queueFlushing: Promise<void>;
@@ -236,7 +236,7 @@ export class MinLog {
     let deferred = _.deferred<void>();
     this._queue.push(async () => {
       for (let serializer of this.serializers) {
-        entry = await serializer({entry, logger: this as unknown as TypescriptMinLog, rawEntry});
+        entry = await serializer({entry, logger: this as unknown as MinLog, rawEntry});
         if (_.isUndefined(entry)) {
           break;
         }
@@ -247,7 +247,7 @@ export class MinLog {
       }
 
       for (let listener of this.listeners) {
-        await listener({entry, logger: this as unknown as TypescriptMinLog, rawEntry});
+        await listener({entry, logger: this as unknown as MinLog, rawEntry});
       }
 
       deferred.resolve();
@@ -301,10 +301,10 @@ export class MinLog {
   }
 }
 
-export type TypescriptMinLog = MinLog & {
-  new(options?: MinLogOptions): MinLog & MinLogDefaultLevelLogFns;
+export type MinLog = BaseMinLog & MinLogDefaultLevelLogFns;
+
+export let MinLog = BaseMinLog as Omit<typeof BaseMinLog, 'prototype'> & {
+  new(options?: MinLogOptions): MinLog;
 };
 
-export let TypescriptMinLog = MinLog as TypescriptMinLog;
-
-export default TypescriptMinLog;
+export default MinLog;
