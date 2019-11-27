@@ -15,7 +15,6 @@ import {
 } from './types';
 
 import {
-  Expand,
   Fn,
   InstanceReplace,
   MaybePromise
@@ -169,7 +168,8 @@ export class BaseMinLog {
 
     if (this.requireSrc) {
       // handle https://github.com/tobiipro/babel-preset-firecloud#babel-plugin-firecloud-src-arg-default-config-needed
-      let babelSrcAbsoluteFilename = _.get(args[0] as object, '_babelSrc.file') as string;
+      let maybeBabelSrcArg = args[0] as any;
+      let babelSrcAbsoluteFilename = maybeBabelSrcArg?._babelSrc?.file as string;
       if (!_.startsWith(babelSrcAbsoluteFilename, '/')) {
         babelSrcAbsoluteFilename = undefined;
       }

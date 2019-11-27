@@ -4,9 +4,8 @@ import {
   MinLogEntry
 } from './types';
 
-export let jsonStringifyReplacer = function(_key, value): unknown {
-  let toJSON = _.get(value, 'toJSON');
-  if (_.isFunction(toJSON)) {
+export let jsonStringifyReplacer = function(_key: string, value: any): unknown {
+  if (_.isFunction(value?.toJSON)) {
     return value;
   }
 

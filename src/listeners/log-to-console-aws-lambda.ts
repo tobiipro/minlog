@@ -23,6 +23,25 @@ import {
   MaybePromise
 } from 'lodash-firecloud/types';
 
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace NodeJS {
+    interface WriteStream {
+      _handle: import('stream').Pipe & {
+        setBlocking: (blocking: boolean) => void;
+      };
+    }
+  }
+}
+
+declare module '../types' {
+  interface MinLogEntry {
+    ctx?: {
+      awsRequestId?: string;
+    };
+  }
+}
+
 export interface Cfg {
 
   /**
@@ -70,7 +89,7 @@ export let logToConsoleAwsLambda = function(cfg: MaybePromise<Cfg> | Fn<MaybePro
   // This does make process.stdout.write a blocking function (process.stdout._handle.setBlocking(true);),
   // as AWS Lambda previously streamed to an output which was synchronous,
   // but has since changed to asynchronous behaviour, leading to lost logs.
-  if (_.isFunction(_.get(process, 'stdout._handle.setBlocking'))) {
+  if (_.isFunction(process.stdout._handle?.setBlocking)) {
     // @ts-ignore
     process.stdout._handle.setBlocking(true);
   }
@@ -129,7 +148,7 @@ export let logToConsoleAwsLambda = function(cfg: MaybePromise<Cfg> | Fn<MaybePro
     // awsRequestId
     formatPairs.push([
       '\t%s',
-      _.get(entry, 'ctx.awsRequestId', '-')
+      _.defaultTo(entry.ctx?.awsRequestId, '-')
     ]);
 
     // level name
