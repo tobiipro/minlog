@@ -38,7 +38,7 @@ export interface Cfg {
 }
 
 let _isBrowser = typeof window !== 'undefined';
-let _isNode = typeof process !== 'undefined' && _.isDefined(process.versions?.node);
+let _isNode = typeof process !== 'undefined' && _.isDefined(process.versions.node);
 
 let _levelToConsoleFun = function(args: {
   level: MinLogLevel;

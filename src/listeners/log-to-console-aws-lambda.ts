@@ -89,6 +89,9 @@ export let logToConsoleAwsLambda = function(cfg: MaybePromise<Cfg> | Fn<MaybePro
   // This does make process.stdout.write a blocking function (process.stdout._handle.setBlocking(true);),
   // as AWS Lambda previously streamed to an output which was synchronous,
   // but has since changed to asynchronous behaviour, leading to lost logs.
+
+  // remove eslint-disable-next-line after https://github.com/typescript-eslint/typescript-eslint/issues/1051
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (_.isFunction(process.stdout._handle?.setBlocking)) {
     // @ts-ignore
     process.stdout._handle.setBlocking(true);
@@ -148,6 +151,8 @@ export let logToConsoleAwsLambda = function(cfg: MaybePromise<Cfg> | Fn<MaybePro
     // awsRequestId
     formatPairs.push([
       '\t%s',
+      // remove eslint-disable-next-line after https://github.com/typescript-eslint/typescript-eslint/issues/1051
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       _.defaultTo(entry.ctx?.awsRequestId, '-')
     ]);
 
