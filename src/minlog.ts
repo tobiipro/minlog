@@ -291,7 +291,11 @@ export class BaseMinLog {
 
     let result = fn();
     _.defer(async () => {
-      await result;
+      try {
+        await result;
+      } catch {
+      }
+
       args.push({
         _timeEnd: Date.now()
       });
