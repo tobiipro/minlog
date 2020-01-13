@@ -3,7 +3,7 @@ module.exports = {
 
   extends: [
     'firecloud/node',
-    'firecloud/configs/browser.js'
+    'firecloud/configs/browser'
   ],
 
   overrides: [{
