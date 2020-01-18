@@ -93,6 +93,66 @@ This is by design, as it is up to the listener to worry about checking the entry
 and decide to ignore it or not.
 
 
+## Datadog Grok Parser
+
+If you intend to use minlog in a AWS Lambda and want Datadog to properly parse `minlog` messages, use
+
+<details><summary>this definition</summary>:
+
+```grok
+minlog_rule %{minlog_timestamp}\s+%{minlog_lambda_request_id}\s+%{minlog_level}\s+(%{minlog_src}\s+)?%{minlog_msg}\s+%{minlog_extra}
+minlog_raw_rule %{minlog_timestamp}\s+%{minlog_lambda_request_id}\s+%{minlog_level}\s+[^\{]*\s+%{minlog_extra}
+
+### NO CHANGES BELOW THIS LINE
+
+# Common
+report_rule REPORT %{request_id}\s+Duration: %{number:duration:scale(1000000)} ms\s+Billed Duration: %{number:lambda.billed_duration} ms\s+Memory Size: %{number:lambda. memorysize} MB\s+Max Memory Used: %{number:lambda.max_memory_used} MB%{data:xray:keyvalue(": ")}
+
+default_request_rule %{word:lambda.step}\s+%{request_id}(\s+Version: %{notSpace:lambda.version})?
+
+timeout_rule (%{date("yyyy-MM-dd'T'HH:mm:ss.SSSZ"):timestamp}|%{date("yyyy-MM-dd'T'HH:mm:ss.SSZ"):timestamp})\s+%{notSpace:lambda.request_id}\s+%{regex("Task timed out"):error.message} after (%{number:duration:scale(1000000000)} seconds|%{number:duration:scale(1000000)} milliseconds)
+
+process_error_rule %{request_id} (%{regex("Process exited before completing request"):error.message}|%{regex("Error"):level}:%{data:error.message})
+
+# Node
+node_json_rule %{node_prelude}(\s*Invoke Error\s*)?%{data::json}
+
+# Python
+python_rule %{python_prelude}.*
+python_error %{regex("[^:]*"):error.message}: %{notSpace:error.kind}(\n|\s|\t)*Traceback \(most recent call last\):(?s)\s*%{data:error.stack}
+
+# Ruby
+ruby_basic %{regex("[\\w]")},\s\[%{date("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"):timestamp} #%{number}\]\s+%{word:level} --\s*: %{data::keyvalue}
+
+fallback_json (%{date("yyyy-MM-dd'T'HH:mm:ss.SSSZ"):timestamp}|%{date("yyyy-MM-dd'T'HH:mm:ss.SSZ"):timestamp})\s+%{notSpace:lambda.request_id}\s+(%{word:level}:)?(%{data::json})
+# Sample
+# START RequestId: c9a3b892-c2ca-4391-82fe-a47570039262 Version: $LATEST
+# REPORT RequestId: ab5d39f5-1270-4226-9878-27f51b1bed57	Duration: 8384.24 ms	Billed Duration: 8400 ms 	Memory Size: 128 MB	Max Memory Used: 128 MB
+# 2019-07-18T18:58:55.265Z	189a9433-fb77-4659-90d4-bc06edb890e0	ERROR	Invoke Error	{"errorType":"Error","errorMessage":"A test error"}
+# 2019-07-18T18:58:22.286Z b5264ab7-2056-4f5b-bb0f-a06a70f6205d Task timed out after 30.03 seconds
+# [ERROR]	2019-07-18T21:30:46.599Z	ffbce4c2-d80e-4ffa-a0bc-505361e28b8a	This is a regular python error
+# 2019-07-18T19:47:18.146Z	95ce2ab7-cf99-4030-bede-2055a69cedec	ERROR	This is a regular node error
+```
+
+Advanced settings: Extract from `message`:
+
+```grok
+minlog_timestamp %{date("yyyy-MM-dd'T'HH:mm:ss.SSSZ"):timestamp}
+minlog_lambda_request_id (\-|%{notSpace:lambda.request_id})
+minlog_level %{word:level}
+minlog_src %{regex("[^:]+"):minlog._src.filename}:%{regex("[0-9]+"):minlog._src.line}:%{regex("[0-9]+"):minlog._src.column}( in %{notSpace:minlog._src.function})?
+minlog_msg %{data:minlog.msg}([\u00A0]{0,255}\.)?
+minlog_extra %{regex("\\{.*\\}"):minlog:json}
+
+### NO CHANGES BELOW THIS LINE
+
+request_id RequestId: %{notSpace:lambda.request_id}
+node_prelude (%{date("yyyy-MM-dd'T'HH:mm:ss.SSSZ"):timestamp}|%{date("yyyy-MM-dd'T'HH:mm:ss.SSZ"):timestamp})\s+%{notSpace:lambda.request_id}\s+(\[)?+%{word:level}+(\])?
+python_prelude \[%{word:level}\]?\s+(%{date("yyyy-MM-dd'T'HH:mm:ss.SSSZ"):timestamp}|%{date("yyyy-MM-dd'T'HH:mm:ss.SSZ"):timestamp})\s+%{notSpace:lambda.request_id}
+```
+
+</details>
+
 ## License
 
 [Apache 2.0](LICENSE)
