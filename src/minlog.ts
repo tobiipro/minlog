@@ -255,9 +255,9 @@ export class BaseMinLog {
       deferred.resolve();
     });
 
-    _.defer(async () => {
+    _.defer(_.asyncCb(async () => {
       await this.flush();
-    });
+    }));
 
     return {
       promise: deferred.promise
@@ -290,7 +290,7 @@ export class BaseMinLog {
     this.time(...args);
 
     let result = fn();
-    _.defer(async () => {
+    _.defer(_.asyncCb(async () => {
       try {
         await result;
       } catch {
@@ -301,7 +301,7 @@ export class BaseMinLog {
       });
 
       this.time(...args);
-    });
+    }));
 
     return result;
   }

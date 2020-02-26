@@ -20,7 +20,7 @@
   "dependencies": {
     "@types/moment-timezone": "^0.5.12",
     "fast-safe-stringify": "^2.0.6",
-    "lodash-firecloud": "git://github.com/tobiipro/lodash-firecloud.git#semver:~0.5.3",
+    "lodash-firecloud": "git://github.com/tobiipro/lodash-firecloud.git#semver:~0.5.23",
     "moment": "^2.20.1",
     "moment-timezone": "^0.5.14"
   },
