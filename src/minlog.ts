@@ -51,9 +51,9 @@ export class BaseMinLog {
     _.forEach(this.levels, (levelCode, levelName) => {
       // prefer not using _.bind or any other external function
       // in order to improve function name detection via _.getStackTrace below
-      this[levelName] = ((...args) => {
-        return this.log(levelCode, ...args);
-      }) as MinLogLogFn;
+      this[levelName] = ((...args) =>
+        this.log(levelCode, ...args)
+      ) as MinLogLogFn;
     });
   }
 
@@ -238,7 +238,7 @@ export class BaseMinLog {
     let deferred = _.deferred<void>();
     this._queue.push(async () => {
       for (let serializer of this.serializers) {
-        entry = await serializer({entry, logger: this as unknown as MinLog, rawEntry});
+        entry = await serializer({ entry, logger: this as unknown as MinLog, rawEntry });
         if (_.isUndefined(entry)) {
           break;
         }
@@ -249,7 +249,7 @@ export class BaseMinLog {
       }
 
       for (let listener of this.listeners) {
-        await listener({entry, logger: this as unknown as MinLog, rawEntry});
+        await listener({ entry, logger: this as unknown as MinLog, rawEntry });
       }
 
       deferred.resolve();
