@@ -284,6 +284,8 @@ export let logToConsole = function(cfg: MaybePromise<Cfg> | Fn<MaybePromise<Cfg>
         let valueStr = fastSafeStringify(valueObj, jsonStringifyReplacer, 2);
         valueStr = `\n${valueStr}`;
         extraArgs.push(valueStr);
+      } else {
+        extraArgs.push(valueObj);
       }
     });
 
