@@ -1,6 +1,10 @@
-import MinLog from '../minlog';
 import _ from 'lodash-firecloud';
 import fastSafeStringify from 'fast-safe-stringify';
+
+import {
+  MinLog,
+  MinLogRef
+} from '../minlog';
 
 import {
   MinLogEntry,
@@ -277,8 +281,14 @@ export let logToConsole = function(cfg: MaybePromise<Cfg> | Fn<MaybePromise<Cfg>
       };
 
       if (_isBrowser) {
-        extraArgs.push('\n');
-        extraArgs.push(valueObj);
+        if (valueObj instanceof MinLogRef) {
+          extraArgs.push('\n');
+          extraArgs.push(valueObj);
+        } else {
+          let valueStr = fastSafeStringify(valueObj, jsonStringifyReplacer, 2);
+          valueStr = `\n${valueStr}`;
+          extraArgs.push(valueStr);
+        }
       } else if (_isNode) {
         // prefer JSON output over util.inspect output
         let valueStr = fastSafeStringify(valueObj, jsonStringifyReplacer, 2);

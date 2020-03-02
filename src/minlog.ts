@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import _ from 'lodash-firecloud';
 import defaultLevels from './default-levels';
 
@@ -27,6 +28,18 @@ interface MinLogLogFn {
 type MinLogDefaultLevelLogFns = {
   [TKey in keyof typeof defaultLevels]: MinLogLogFn;
 };
+
+export class MinLogRef<T> {
+  value: T;
+
+  constructor(value: T) {
+    this.value = value;
+  }
+
+  get(): T {
+    return this.value;
+  }
+}
 
 export class BaseMinLog {
   _queue: Fn<Promise<void>, []>[] = [];
@@ -125,6 +138,11 @@ export class BaseMinLog {
     let maxLevelCodeGroup = _.floor(levelCode / 10) + 1;
     let maxLevelCode = maxLevelCodeGroup * 10 - 1;
     return maxLevelCode;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  ref<T>(value: T): MinLogRef<T> {
+    return new MinLogRef(value);
   }
 
   async flush(): Promise<void> {

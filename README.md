@@ -39,6 +39,10 @@ let log = new MinLog({
 log.warn('This is a warning!'); // logToConsole will ignore this
 log.error('This is an error!');
 
+// in the browser, if you want to log a reference, and interact with it in Chrome DevTools use log.ref
+log.error('This is a JSON snapshot of the document object:', {document});
+log.error('This is the document object itself', {document: log.ref(document)});
+
 // if you want to make sure that a log entry has been processed by all serializers/listeners
 await log.error('This is an error!').promise;
 
